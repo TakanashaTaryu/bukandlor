@@ -29,7 +29,7 @@
                 <span class="fade-up" style="animation-delay: 4.6s;">With each step you take, your light will grow brighter, <span class="font-bold">guiding you toward your ultimate destiny.</span></span>
             </p>
         </div>
-        <img src="assets/Land.webp" alt="Land" class="absolute bottom-0 w-full h-[60vh] sm:h-[100vh]" id="land1">
+        <img src="assets/Land.svg" alt="Land" class="absolute bottom-0 w-full h-[60vh] sm:h-[100vh]">
 
 
         <img src="assets/LeftBottomElement.webp" alt="Bottom Left Element" class="absolute left-0 bottom-0 w-[40vw] sm:w-[35vw] md:w-[22vw] h-auto" id="BL-Element">
@@ -37,7 +37,7 @@
         
     </section>
     <section class="relative h-screen bg-LandingCaas2 bg-cover bg-center overflow-x-hidden overflow-y-hidden">
-        <img src="assets/Land.webp" alt="Land" class="absolute top-0 w-full h-[100vh] scale-y-[-1]">
+        <img src="assets/Land.svg" alt="Land" class="absolute top-0 w-full h-[100vh] scale-y-[-1]">
         <img src="assets/LandingShine.webp" alt="Shine" class="absolute w-full h-[50vh]  -bottom-5">
         <img src="assets/RightBottomElement[2].webp" alt="Shine" class="absolute w-[40vw] sm:w-[35vw] md:w-[22vw] h-auto right-0 bottom-0">
         <img src="assets/leftBottomElement[2].webp" alt="Shine" class="absolute w-[40vw] sm:w-[35vw] md:w-[22vw] h-auto left-0 bottom-0">
