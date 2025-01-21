@@ -84,7 +84,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::view('home', 'admin.home')->name('home');
     // Route::view('reset-password', 'admin.reset-password')->name('reset-password');
 
-    Route::get('/shift', [ShiftController::class, 'index'])->name('shift.index');
+    Route::get('/shift', [ShiftController::class, 'index'])->name('shift');
     Route::post('/shift', [ShiftController::class, 'store'])->name('shift.store');
     Route::get('/shift/{id}', [ShiftController::class, 'show'])->name('shift.show');
     Route::put('/shift/{id}', [ShiftController::class, 'update'])->name('shift.update');
@@ -99,7 +99,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     $resources = [
         'announcement' => AnnouncementController::class,
-        'shift' => ShiftController::class,
+        // 'shift' => ShiftController::class,
         'asisten' => UserAsistenController::class,
         'caas' => UserCaasController::class,
         'gems' => RoleController::class,
