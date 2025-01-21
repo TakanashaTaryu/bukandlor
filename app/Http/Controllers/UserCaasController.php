@@ -190,6 +190,7 @@ class UserCaasController extends Controller
      */
     public function destroy(string $id)
     {
-        Caas::destroy($id);
+        $caas = Caas::findOrFail($id);
+        User::destroy($caas->user_id);
     }
 }

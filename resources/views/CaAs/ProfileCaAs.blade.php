@@ -7,7 +7,6 @@
     <title>Profile</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 
 <body class="min-h-screen bg-Profile bg-cover bg-center bg-no-repeat max-w-full overflow-x-hidden">
