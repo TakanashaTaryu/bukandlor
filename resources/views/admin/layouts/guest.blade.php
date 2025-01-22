@@ -9,25 +9,10 @@
 
     <!-- Include Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        /* Ensure canvas covers the entire background */
-        #webgl-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; /* Send canvas to the background */
-        }
-
-        body {
-            overflow: hidden; /* Prevent scrollbars due to canvas overflow */
-        }
-    </style>
 </head>
 <body class="font-im-fell-english flex flex-col min-h-screen">
     <!-- Background Canvas -->
-    <canvas id="webgl-canvas"></canvas>
+    <canvas id="webgl-canvas" class="absolute w-screen h-screen top-0 -z-10"></canvas>
 
     <!-- Main Content -->
     <main class="flex-grow">

@@ -97,6 +97,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Ini logout terpisah karena kalo pake Route::resource dia jadi DELETE /admin/login/{login}
     Route::post('logout', [AdminSessionController::class, 'destroy'])->name('logout');
 
+    Route::post('/caas/import', [UserCaasController::class, 'import'])->name('caas.import');
+
     $resources = [
         'announcement' => AnnouncementController::class,
         // 'shift' => ShiftController::class,

@@ -16,7 +16,7 @@
     x-data="{ open: false, isProfileOpen: false }"
     class="relative min-h-screen"
 >
-<canvas id="webgl-canvas"></canvas>
+<canvas id="webgl-canvas" class="absolute w-screen h-screen top-0 -z-10"></canvas>
 <!-- Overlay (lapisan abu-abu 40%) -->
 <div class="absolute inset-0 bg-custom-gray opacity-40 z-0"></div>
 

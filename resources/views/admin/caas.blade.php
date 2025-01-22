@@ -46,6 +46,28 @@ async function updateCaas(caasId, updatedData) {
     }
 }
 
+async function importCaas(file) {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData._method = "patch";
+        const response = await fetch("/admin/caas/import", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to import CAAS');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 async function deleteCaas(caasId) {
     try {
         const response = await fetch(`/admin/caas/${caasId}`, {
@@ -130,7 +152,10 @@ function manageCaAs() {
         // Import file
         // ----------------------
         chosenFile: null,
-
+        isLoading: false,
+        timer: null,
+        elapsedTime: 0,
+        
         // ----------------------
         // Data terpilih (View/Edit/Delete)
         // ----------------------
@@ -265,7 +290,7 @@ function manageCaAs() {
                     email: this.addEmail || 'No Email',
                     major: this.addMajor || 'N/A',
                     password: this.addPassword || 'N/A',
-                    className: this.addClass || 'N/A',
+                    className: this.addClass || 'N/A', // kurang role dan status
                 };
 
                 await createCaas(newCaas);
@@ -291,13 +316,41 @@ function manageCaAs() {
             }
         },
 
-        // Modal "Import Excel" -> simpan (dummy)
-        saveImport() {
-            // Hanya simulasi
-            alert('File imported (dummy).');
-            this.isImportOpen = false;
-            this.resetImport();
+        async saveImport() {
+            console.log("Selected file:", this.chosenFile);
+
+            if (!this.chosenFile) {
+                alert("No file selected!");
+                return;
+            }
+
+            // Show loading indicator
+            this.isLoading = true;
+            this.elapsedTime = 0;
+
+            // Start a timer to track elapsed time
+            this.timer = setInterval(() => {
+                this.elapsedTime++;
+            }, 1000); // Increment every 1 second
+
+            try {
+                // Call importCaas and wait for it to complete
+                await importCaas(this.chosenFile);
+
+                // Reload after the import completes
+                window.location.reload();
+            } catch (error) {
+                console.error("Import failed:", error);
+                alert("Import failed. Please try again.");
+            } finally {
+                // Stop the timer and hide loading indicator
+                clearInterval(this.timer);
+                this.isLoading = false;
+                this.isImportOpen = false;
+                this.resetImport();
+            }
         },
+
 
         // View / Edit / Delete
         viewCaas(caas) {
@@ -866,10 +919,10 @@ function manageCaAs() {
             <hr class="border-white/50 mb-6" />
 
             <p class="text-xl sm:text-2xl mb-2">
-                Format file: (NIM, Name, Email, Major, Class, etc)
+                Format file:
             </p>
             <div class="bg-custom-gray rounded-2xl p-4 sm:p-6 mb-4 text-biru-tua">
-                <p>NIM, Name, Major, Email, Class ...</p>
+                <p>NIM, Name, Email, Major, Class, Gems, Status, State</p>
             </div>
 
             <!-- Pilih File -->
@@ -891,10 +944,15 @@ function manageCaAs() {
 
             <button 
                 class="bg-abu-abu-keunguan text-biru-tua px-6 py-3 rounded-2xl hover:opacity-90 transition"
-                @click="saveImport"
+                @click="saveImport" :disabled="isLoading"
             >
                 Import
             </button>
+
+            <!-- Loading Indicator -->
+            <div x-show="isLoading" class="loading">
+                Importing... Time elapsed: <span x-text="elapsedTime"></span> seconds
+            </div>
         </div>
     </div>
 

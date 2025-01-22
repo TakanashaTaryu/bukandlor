@@ -16,7 +16,7 @@
     x-data="{ open: false, isProfileOpen: false }"
     class="relative min-h-screen"
 >
-<canvas id="webgl-canvas"></canvas>
+<canvas id="webgl-canvas" class="absolute w-screen h-screen top-0 -z-10"></canvas>
     {{-- HEADER (fixed) --}}
     <x-admin-nav/>
 

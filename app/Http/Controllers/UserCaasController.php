@@ -3,11 +3,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CaasImport;
 use App\Models\Caas;
 use App\Models\Role;
 use App\Models\Stage;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserCaasController extends Controller
 {
@@ -73,9 +75,6 @@ class UserCaasController extends Controller
             'email' => 'nullable|string|max:255',
             'major' => 'nullable|string|max:255',
             'className' => 'nullable|string|max:255',
-            // 'gems' => 'nullable|string|max:255',         // Hapus 'gems' dan 'status' karena kita isi otomatis
-            // 'status' => 'nullable|string|max:255',
-            // 'state' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -192,5 +191,16 @@ class UserCaasController extends Controller
     {
         $caas = Caas::findOrFail($id);
         User::destroy($caas->user_id);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls'
+        ]);
+
+        Excel::import(new CaasImport, $request->file('file'));
+
+        return response()->json(['success' => 'Successfully imported data'], 200);
     }
 }
