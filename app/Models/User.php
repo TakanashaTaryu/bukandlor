@@ -22,6 +22,8 @@ class User extends Authenticatable
         'nim',
         'password',
         'is_admin',
+        'last_activity',
+        'last_seen_announcement'
     ];
 
     /**

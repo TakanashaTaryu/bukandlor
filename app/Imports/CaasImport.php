@@ -9,7 +9,6 @@ use App\Models\Profile;
 use App\Models\Role;
 use App\Models\CaasStage;
 use App\Models\Stage;
-use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -21,7 +20,7 @@ class CaasImport implements ToModel, WithHeadingRow
         $user = User::firstOrCreate(
             ['nim' => $row['nim']], // Match using NIM
             [
-                'password' => Hash::make('default_password'), // Set a default password
+                'password' => bcrypt($row['nim']), // Set nim as default password
             ]
         );
 

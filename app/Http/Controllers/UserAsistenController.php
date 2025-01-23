@@ -42,6 +42,7 @@ class UserAsistenController extends Controller
                 'nim'      => $validated['kodeAsisten'],
                 'password' => bcrypt($validated['password']),
                 'is_admin' => 1,
+                'last_activity' => now()->getTimestamp(),
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             // 409 = Conflict

@@ -7,8 +7,15 @@ fake = Faker()
 
 # Define possible values for 'Gems', 'Status', and 'State'
 gems_options = ['Ruby', 'Sapphire', 'Emerald', 'Diamond']
-status_options = ['Active', 'Inactive', 'Pending']
-state_options = ['Stage 1', 'Stage 2', 'Stage 3', 'Completed']
+status_options = ['Pass', 'Fail', 'unknown']
+state_options = [
+                    'Administration',
+                    'Coding & Writing Test',
+                    'Interview',
+                    'Grouping Task',
+                    'Teaching Test',
+                    'Upgrading'
+                ]
 
 # Generate fake data
 data = []
@@ -16,8 +23,8 @@ for _ in range(50):  # Generate 50 fake records
     nim = fake.unique.random_int(min=1000000, max=9999999)
     name = fake.name()
     email = fake.email()
-    major = fake.random_element(elements=['Computer Science', 'Engineering', 'Mathematics', 'Physics'])
-    class_name = f"Class {random.randint(1, 10)}-{random.choice(['A', 'B', 'C'])}"
+    major = fake.random_element(elements=['Teknik Elekto', 'Teknik Telekomunikasi', 'Teknik Sistem Energi', 'Teknik Biomedis', 'Teknik Fisika'])
+    class_name = f"{random.choice(['EL', 'TT', 'TB', 'TSE', 'TF'])}-{random.randint(1, 99):02}"
     gems = random.choice(gems_options)
     status = random.choice(status_options)
     state = random.choice(state_options)

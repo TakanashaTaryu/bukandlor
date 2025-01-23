@@ -56,6 +56,8 @@ class UserCaasController extends Controller
                 'gems' => $caas->role->name ?? '',
                 'state' => $caas->user->caasStage->stage->name ?? 'unknown',
                 'status' => $caas->user->caasStage->status ?? 'unknown',
+                'lastActivity' => $caas->user->last_activity,
+                'lastSeenAnnouncement' => $caas->user->last_seen_announcement,
             ];
         });
 
@@ -81,6 +83,7 @@ class UserCaasController extends Controller
             $user = User::create([
                 'nim' => $validated['nim'],
                 'password' => bcrypt($validated['password']),
+                'last_activity' => now()->getTimestamp(),
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json(['error' => 'That NIM already exists.'], 409);

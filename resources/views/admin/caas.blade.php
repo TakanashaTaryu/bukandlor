@@ -620,6 +620,14 @@ function manageCaAs() {
                         <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
                             State
                         </th>
+                        <!-- Last activity -->
+                        <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
+                            Last Activity
+                        </th>
+                        <!-- Last seen announcement -->
+                        <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
+                            Read Announcement
+                        </th>
                         <!-- Action -->
                         <th class="py-3 px-3 text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
                             Action
@@ -678,6 +686,49 @@ function manageCaAs() {
                             <td 
                                 class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
                                 x-text="caas.state"
+                            ></td>
+                            <!-- Last activity -->
+                            <td 
+                                class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
+                                x-text="(() => {
+                                    let date = new Date(caas.lastActivity * 1000);
+                                    let hours = date.getHours().toString().padStart(2, '0'); // Ensure 2-digit hours
+                                    let minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure 2-digit minutes
+                                    let day = date.getDate().toString().padStart(2, '0'); // 2-digit day
+                                    let month = date.toLocaleString('en-US', { month: 'short' }); // Short month name
+                                    let year = date.getFullYear();
+                                    return `${hours}:${minutes}, ${day}/${month}/${year}`;
+                                })()"
+                            ></td>
+                            <!-- Last seen announcement -->
+                            <td 
+                                class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
+                                x-text="(() => {
+                                    if (!caas.lastSeenAnnouncement) {
+                                        return 'Never seen';
+                                    }
+                                    let now = Math.floor(Date.now() / 1000); // Current time in UNIX timestamp
+                                    let past = caas.lastSeenAnnouncement; // UNIX timestamp from your data
+                                    let diff = now - past; // Difference in seconds
+
+                                    // Time intervals in seconds
+                                    let units = [
+                                        { label: 'week', value: 604800 },
+                                        { label: 'day', value: 86400 },
+                                        { label: 'hour', value: 3600 },
+                                        { label: 'minute', value: 60 }
+                                    ];
+
+                                    // Find the most significant time unit
+                                    for (let unit of units) {
+                                        let count = Math.floor(diff / unit.value);
+                                        if (count >= 1) {
+                                            return `${count} ${unit.label}${count > 1 ? 's' : ''} ago`;
+                                        }
+                                    }
+
+                                    return 'Just now'; // Default case
+                                })()"
                             ></td>
                             <!-- Action Buttons -->
                             <td class="py-3 px-3 text-biru-tua font-im-fell-english text-sm sm:text-base">
