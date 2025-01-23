@@ -8,6 +8,9 @@ use App\Models\Plottingan;
 use App\Models\Shift;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Caas;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\ShiftsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PlottinganController extends Controller
 {
@@ -74,5 +77,18 @@ class PlottinganController extends Controller
     {
         $shift = Shift::with('plottingans.caas')->findOrFail($id);
         return view('admin.view-plot-show', compact('shift'));
+    }
+
+    public function exportPdf()
+    {
+        $shifts = Shift::withCount('plottingans')->get();
+
+        $pdf = Pdf::loadView('admin.shifts-pdf', compact('shifts'));
+        return $pdf->download('shifts.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ShiftsExport, 'shifts.xlsx');
     }
 }

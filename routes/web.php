@@ -126,6 +126,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // RESET PASSWORD ADMIN
     Route::get('/reset-password', [AdminProfileController::class, 'showResetPasswordForm'])->name('reset-password');
     Route::post('/reset-password', [AdminProfileController::class, 'updatePassword'])->name('reset-password.update');
+
+    Route::get('/export-pdf', [PlottinganController::class, 'exportPdf'])->name('plot.export.pdf');
+    Route::get('/export-excel', [PlottinganController::class, 'exportExcel'])->name('plot.export.excel');
+
 });
 
 

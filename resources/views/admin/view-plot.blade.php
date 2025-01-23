@@ -78,20 +78,17 @@
                 >
                     Copy
                 </button>
-                <button 
+                <a href="{{ route('admin.plot.export.excel') }}" 
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                    title="Unduh ke Excel (dummy)"
-                >
+                        hover:opacity-90 transition text-sm">
                     Excel
-                </button>
-                <button 
+                </a>
+                <a href="{{ route('admin.plot.export.pdf') }}"
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                    title="Unduh ke PDF (dummy)"
-                >
+                        hover:opacity-90 transition text-sm">
                     PDF
-                </button>
+                </a>
+
                 <button 
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
                            hover:opacity-90 transition text-sm"

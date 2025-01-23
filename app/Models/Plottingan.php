@@ -15,6 +15,7 @@ class Plottingan extends Model
         'caas_id',
         'shift_id',
         // 'stage_id', jika ada keknya kan udah cuman interview doank
+        // atau teaching
     ];
 
     // Relasi ke CAAS
