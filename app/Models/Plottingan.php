@@ -14,8 +14,7 @@ class Plottingan extends Model
     protected $fillable = [
         'caas_id',
         'shift_id',
-        // 'stage_id', jika ada keknya kan udah cuman interview doank
-        // atau teaching
+        // 'stage_id', jika ada keknya kan udah cuman interview sama teaching
     ];
 
     // Relasi ke CAAS

@@ -7,9 +7,9 @@
 <div 
     class="w-full max-w-7xl mx-auto px-4 py-6"
     x-data="{
-        announcement: {{ $announcement }},
-        shift: {{ $shift }},
-        gems: {{ $gems }},
+        announcement: @json($announcement),
+        shift: @json($shift),
+        gems: @json($gems),
 
         // State default
         state: '{{ $current_state }}',
@@ -60,6 +60,7 @@
         },
     }"
 >
+
     <!-- Status Card -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-white bg-biru-tua rounded-2xl p-6">
         <!-- Welcome Section -->

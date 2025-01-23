@@ -45,7 +45,8 @@
 
             <!-- Dropdown menu -->
             <div
-                class="absolute top-16 md:top-20 right-0 w-48 sm:w-56 bg-gray-300/90 rounded-lg shadow-xl p-3 sm:p-4 z-40"
+                x-cloak
+                class="absolute top-16 md:top-22 right-0 w-48 sm:w-56 bg-gray-300/90 rounded-lg shadow-xl p-3 sm:p-4 z-40"
                 x-show="isProfileOpen"
                 x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 scale-95"
@@ -93,6 +94,7 @@
 
 {{-- SIDEBAR (fixed) --}}
 <aside
+    x-cloak
     class="fixed top-20 md:top-24 left-0 w-48 sm:w-56 md:w-64 h-full bg-black/40 z-40 transform transition-transform duration-300 backdrop-blur-sm"
     :class="open ? 'translate-x-0' : '-translate-x-full'">
     <nav class="py-6 md:py-8 flex flex-col space-y-4 md:space-y-6">

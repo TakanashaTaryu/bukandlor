@@ -13,9 +13,7 @@ class Role extends Model
     protected $fillable = [
         'name',
         'description',
-        'avatar_url',
-        'photo_character_url',
-        'photo_profile_url',
+        'image',
         'quota',
     ];
 

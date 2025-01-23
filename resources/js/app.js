@@ -1,8 +1,8 @@
 import './bootstrap';
 
-function showShift() {
-    document.getElementById('popupShift').classList.remove('hidden');
-}
+// function showShift() {
+//     document.getElementById('popupShift').classList.remove('hidden');
+// }
 
 function hideShift() {
     document.getElementById('popupShift').classList.add('hidden');
@@ -30,7 +30,7 @@ function moveCardDown(){
     console.log('yeay');
 }
 
-window.showShift = showShift;
+// window.showShift = showShift;
 window.hideShift = hideShift;
 window.showChangePass = showChangePass;
 window.hideChangePass = hideChangePass;

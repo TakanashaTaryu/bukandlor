@@ -11,15 +11,14 @@
         failMessage: @js($fail),
         link: @js($link),
         showPreview: false,
-        checkUpdate() {
-            // Apakah perlu menampilkan preview? 
-            const oneMinuteAgo = Date.now() - 10000; // 10 detik (demo)
-            if ({{ $lastUpdated }} && {{ $lastUpdated }} * 1000 >= oneMinuteAgo) {
+        init() {
+            // Tampilkan preview jika ada minimal satu pesan/link tidak kosong ( sebelumnya tuh dia harus bener bener ada update an terbaru (bukan sama) baru muncul previewnya. Aku setel aja selalu muncul kalau ada string )
+            if (this.passMessage || this.failMessage || this.link) {
                 this.showPreview = true;
             }
         }
     }"
-    x-init="checkUpdate()"
+    x-init="init()"
 >
     <!-- Page Title -->
     <h1 class="text-center text-white text-3xl sm:text-4xl md:text-5xl font-[IM_FELL_English]">

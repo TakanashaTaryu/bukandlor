@@ -52,56 +52,43 @@ Route::middleware(['auth', 'caas'])->group(function () {
     
     // Kontak asisten 
     Route::view('assistants', 'CaAs.AssistansPage')->name('caas.assistants');
-    
-    Route::view('choose-shift', 'CaAs.ChooseShift')->name('caas.choose-shift');
 
-    Route::view('shift', 'CaAs.FixShift')->name('caas.shift');
-    
-    Route::view('choose-gem', 'CaAs.ChooseGem')->name('caas.choose-gem');
-    
-    Route::view('gem', 'CaAs.FixGem')->name('caas.gem');
+    Route::get('choose-shift', [PlottinganController::class, 'chooseShiftView'])->name('caas.choose-shift');
+    Route::post('shift/pick',   [PlottinganController::class, 'pickShift'])->name('caas.shift.pick');
+    Route::get('shift',         [PlottinganController::class, 'fixShiftView'])->name('caas.fix-shift');
 
-    Route::post('shift/pick', [PlottinganController::class, 'pickShift'])
-        ->name('caas.shift.pick');
+    // Pemilihan Gem
+    Route::get('choose-gem', [UserCaasController::class, 'chooseGemView'])->name('caas.choose-gem');
+    Route::post('pick-gem', [UserCaasController::class, 'pickGem'])->name('caas.pick-gem');
+    Route::get('gem', [UserCaasController::class, 'fixGemView'])->name('caas.fix-gem');
 });
 
 Route::view('/admin', 'secret');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::resource('asisten', UserAsistenController::class)
-        ->only(['index', 'store', 'update', 'destroy'])
-        ->names([
-            'index' => 'asisten',       // GET /admin/asisten
-            'store' => 'asisten.create', // POST /admin/asisten
-            'update' => 'asisten.update', // PATCH or POST /admin/asisten/{id}
-            'destroy' => 'asisten.delete', // DELETE /admin/asisten/{id}
-        ]);
-
-    // Tambah endpoint reset
-    Route::post('/shift/reset-plot', [ShiftController::class, 'resetPlot'])->name('shift.resetPlot');
-    Route::post('/shift/reset-shift', [ShiftController::class, 'resetShift'])->name('shift.resetShift');
     Route::view('home', 'admin.home')->name('home');
-    // Route::view('reset-password', 'admin.reset-password')->name('reset-password');
-
-    Route::get('/shift', [ShiftController::class, 'index'])->name('shift');
-    Route::post('/shift', [ShiftController::class, 'store'])->name('shift.store');
-    Route::get('/shift/{id}', [ShiftController::class, 'show'])->name('shift.show');
-    Route::put('/shift/{id}', [ShiftController::class, 'update'])->name('shift.update');
-    Route::delete('/shift/{id}', [ShiftController::class, 'destroy'])->name('shift.destroy');
 
     // Reset Shift & Plot
     Route::post('/shift/reset-shifts', [ShiftController::class, 'resetShifts'])->name('shift.resetShifts');
     Route::post('/shift/reset-plot', [ShiftController::class, 'resetPlot'])->name('shift.resetPlot');
 
-    // Ini logout terpisah karena kalo pake Route::resource dia jadi DELETE /admin/login/{login}
-    Route::post('logout', [AdminSessionController::class, 'destroy'])->name('logout');
+    // View Plot
+    Route::get('/view-plot', [PlottinganController::class, 'viewPlot'])->name('view-plot');
+    Route::get('/view-plot/{id}', [PlottinganController::class, 'show'])->name('view-plot.show');
+    Route::get('/export-pdf', [PlottinganController::class, 'exportPdf'])->name('plot.export.pdf');
+    Route::get('/export-excel', [PlottinganController::class, 'exportExcel'])->name('plot.export.excel');
 
+    // User caas import excel
     Route::post('/caas/import', [UserCaasController::class, 'import'])->name('caas.import');
+
+    // RESET PASSWORD ADMIN
+    Route::get('/reset-password', [AdminProfileController::class, 'showResetPasswordForm'])->name('reset-password');
+    Route::post('/reset-password', [AdminProfileController::class, 'updatePassword'])->name('reset-password.update');
+    Route::post('logout', [AdminSessionController::class, 'destroy'])->name('logout');
 
     $resources = [
         'announcement' => AnnouncementController::class,
-        // 'shift' => ShiftController::class,
+        'shift' => ShiftController::class,
         'asisten' => UserAsistenController::class,
         'caas' => UserCaasController::class,
         'gems' => RoleController::class,
@@ -111,7 +98,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     foreach ($resources as $key => $controller) {
         Route::resource($key, $controller)
-            ->only(['index', 'store', 'destroy', 'update'])
+            ->only(['index', 'store', 'destroy', 'update', 'show'])
             ->names([
                 'index' => "$key",
                 'store' => "$key.store",
@@ -119,17 +106,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
                 'update' => "$key.update",
             ]);
     }
-
-    Route::get('/view-plot', [PlottinganController::class, 'viewPlot'])->name('view-plot');
-    Route::get('/view-plot/{id}', [PlottinganController::class, 'show'])->name('view-plot.show');
-
-    // RESET PASSWORD ADMIN
-    Route::get('/reset-password', [AdminProfileController::class, 'showResetPasswordForm'])->name('reset-password');
-    Route::post('/reset-password', [AdminProfileController::class, 'updatePassword'])->name('reset-password.update');
-
-    Route::get('/export-pdf', [PlottinganController::class, 'exportPdf'])->name('plot.export.pdf');
-    Route::get('/export-excel', [PlottinganController::class, 'exportExcel'])->name('plot.export.excel');
-
 });
 
 

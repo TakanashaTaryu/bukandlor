@@ -54,8 +54,13 @@ class UserAsistenController extends Controller
             'major' => $validated['divisi'] ?? '',
         ]);
 
-        // Sukses => kembalikan status 201 (Created)
-        return response('Asisten created', 201);
+        // Kembalikan JSON data user-nya
+        return response()->json([
+            'id'           => $user->id,
+            'kodeAsisten'  => $user->nim,
+            'nama_lengkap' => $validated['nama_lengkap'] ?? '',
+            'divisi'       => $validated['divisi'] ?? '',
+        ], 201);
     }
 
     public function update(Request $request, $id)

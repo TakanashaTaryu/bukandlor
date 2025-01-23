@@ -181,6 +181,7 @@
 
             <!-- Add Shift (open modal) -->
             <button
+            x-cloak
                 class="flex-1 bg-custom-green text-white font-im-fell-english
                        rounded-[30px] py-4 sm:py-6 md:py-6
                        text-lg sm:text-2xl md:text-3xl text-center
@@ -391,6 +392,7 @@
 
     <!-- MODAL: Add Shift (Form submission ke SHIFT STORE) -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isAddOpen"
         x-transition:enter="transition ease-out duration-200"
@@ -490,6 +492,7 @@
 
     <!-- MODAL: View Shift (Read-Only) -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isViewOpen"
         x-transition:enter="transition ease-out duration-200"
@@ -527,6 +530,7 @@
 
     <!-- MODAL: Edit Shift (Form ke SHIFT UPDATE) -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isEditOpen"
         x-transition:enter="transition ease-out duration-200"
@@ -642,6 +646,7 @@
 
     <!-- MODAL: Confirm Delete (Form ke SHIFT DESTROY) -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isDeleteOpen"
         x-transition:enter="transition ease-out duration-200"

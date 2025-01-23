@@ -6,29 +6,26 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Shift;
 use App\Models\Plottingan;
+use Illuminate\Support\Facades\DB;
 
 class ShiftController extends Controller
 {
     /**
-     * Menampilkan list shift (untuk admin).
-     * Misal ini correspond ke halaman resources/views/admin/shift.blade.php
+     * Tampilkan list SHIFT (untuk admin).
      */
     public function index()
     {
-        // Ambil semua shift atau bisa diurutkan misalnya by date ASC
+        // Ambil semua shift
         $shifts = Shift::orderBy('date', 'asc')
-            ->orderBy('time_start', 'asc')
-            ->get();
+                       ->orderBy('time_start', 'asc')
+                       ->get();
 
-        // Return ke view (untuk contoh: 'admin.shift')
-        // Atau kalau Anda masih pakai data dummy di JS, 
-        // Anda bisa return data JSON dulu untuk Alpine.js
+        // Return ke Blade 'admin.shift'
         return view('admin.shift', compact('shifts'));
     }
 
     /**
-     * Simpan SHIFT baru.
-     * (Correspond ke aksi Add Shift)
+     * Simpan SHIFT baru (Add Shift).
      */
     public function store(Request $request)
     {
@@ -52,7 +49,7 @@ class ShiftController extends Controller
     }
 
     /**
-     * Menampilkan detail SHIFT tertentu (View Shift).
+     * Menampilkan detail SHIFT tertentu (opsional).
      */
     public function show($id)
     {
@@ -91,35 +88,33 @@ class ShiftController extends Controller
     public function destroy($id)
     {
         $shift = Shift::findOrFail($id);
+        // Opsi: Hapus Plottingan milik SHIFT ini jg
+        // Plottingan::where('shift_id',$id)->delete();
         $shift->delete();
-
-        // Jika Anda ingin menghapus data Plottingan yang terikat ke shift ini:
-        // Plottingan::where('shift_id', $id)->delete();
 
         return redirect()->back()->with('success', 'Shift deleted successfully!');
     }
 
     /**
-     * RESET SHIFT: hapus semua data SHIFT (dan Plottingan jika diperlukan).
+     * RESET SHIFT: hapus semua SHIFT (dan Plottingan jika diperlukan).
      */
     public function resetShifts()
     {
-        // Hapus seluruh SHIFT
-        Shift::truncate();
-
-        // Jika mau hapus juga data Plottingan / penjadwalan
-        // Plottingan::truncate();
+        DB::transaction(function() {
+            Shift::truncate();
+            // Jika ingin sekalian reset plottingan
+            // Plottingan::truncate();
+        });
 
         return redirect()->back()->with('success', 'All Shifts have been reset!');
     }
 
     /**
-     * RESET PLOT: hapus data Plottingan (assign shift).
+     * RESET PLOT: hapus semua data Plottingan.
      */
     public function resetPlot()
     {
         Plottingan::truncate();
-
         return redirect()->back()->with('success', 'All Plots have been reset!');
     }
 }

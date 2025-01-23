@@ -1,5 +1,5 @@
 <!-- resources/views/admin/asisten.blade.php -->
-@extends('admin.layouts.app')
+ @extends('admin.layouts.app')
 
 @section('title', 'Manage Asisten - Crystal Cavern')
 
@@ -8,19 +8,34 @@
 /* ======================================================
    Helper CRUD Functions (Fetch API) 
    ====================================================== */
-async function createAsisten(newAsistenData) {
+   async function createAsisten(newAsistenData) {
     const response = await fetch('/admin/asisten', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest', 
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
         },
         body: JSON.stringify(newAsistenData),
     });
+
     if (!response.ok) {
-        const msg = await response.text();
-        throw new Error(msg || 'Failed to create Asisten');
+        // Attempt to parse JSON error response
+        let errorMsg = 'Failed to create Asisten';
+        try {
+            const errorData = await response.json();
+            errorMsg = errorData.message || errorMsg;
+        } catch (e) {
+            // If parsing fails, fallback to text
+            const msg = await response.text();
+            errorMsg = msg || errorMsg;
+        }
+        throw new Error(errorMsg);
     }
+
+    // Kembalikan data JSON
+    return await response.json();
 }
 
 async function updateAsisten(asistenId, updatedData) {
@@ -242,35 +257,32 @@ function manageAsisten() {
 
         // 2. CREATE (Add)
         async saveAddAsisten() {
-            try {
-                await createAsisten({
-                    kodeAsisten: this.addKode,
-                    nama_lengkap: this.addName || '',
-                    divisi: this.addDivisi || '',
-                    password: this.addPassword,
-                });
+    try {
+        // Kirim data ke server
+        const newAsistenResponse = await createAsisten({
+            kodeAsisten: this.addKode,
+            nama_lengkap: this.addName || '',
+            divisi: this.addDivisi || '',
+            password: this.addPassword,
+        });
 
-                // Jika sukses, masukkan ke array lokal
-                this.asistenList.push({
-                    // Nilaikan ID dummy
-                    id: this.asistenList.length > 0
-                        ? Math.max(...this.asistenList.map(a => a.id)) + 1
-                        : 1,
-                    kodeAsisten: this.addKode,
-                    nama_lengkap: this.addName || 'No Name',
-                    divisi: this.addDivisi || 'Other',
-                });
+        // newAsistenResponse berisi: { id, kodeAsisten, nama_lengkap, divisi }
+        this.asistenList.push({
+            id: newAsistenResponse.id, // <-- PAKAI ID YANG ASLI, BUKAN DUMMY
+            kodeAsisten: newAsistenResponse.kodeAsisten,
+            nama_lengkap: newAsistenResponse.nama_lengkap,
+            divisi: newAsistenResponse.divisi,
+        });
 
-                // Tampilkan toast
-                this.showSuccessMessage(`Asisten ${this.addKode} created successfully!`);
-            } catch (error) {
-                console.error(error);
-                alert(error.message);
-            } finally {
-                this.isAddOpen = false;
-                this.resetAddForm();
-            }
-        },
+        this.showSuccessMessage(`Asisten ${this.addKode} created successfully!`);
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    } finally {
+        this.isAddOpen = false;
+        this.resetAddForm();
+    }
+},
 
         // 3. IMPORT (dummy)
         saveImport() {
@@ -615,6 +627,7 @@ function manageAsisten() {
          MODAL: Set Asisten
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isSetOpen"
         x-transition
@@ -661,6 +674,7 @@ function manageAsisten() {
          MODAL: Add Asisten
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isAddOpen"
         x-transition
@@ -738,7 +752,7 @@ function manageAsisten() {
     <!-- -----------------------------
          MODAL: Import Excel
          ----------------------------- -->
-    <div 
+    <div x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isImportOpen"
         x-transition
@@ -793,6 +807,7 @@ function manageAsisten() {
          MODAL: View Asisten
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isViewOpen"
         x-transition
@@ -824,6 +839,7 @@ function manageAsisten() {
          MODAL: Edit Asisten
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isEditOpen"
         x-transition
@@ -893,6 +909,7 @@ function manageAsisten() {
          MODAL: Confirm Delete
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isDeleteOpen"
         x-transition

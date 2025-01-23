@@ -9,6 +9,8 @@ use App\Models\Role;
 use App\Models\Stage;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserCaasController extends Controller
@@ -53,7 +55,7 @@ class UserCaasController extends Controller
                 'email' => $caas->user->profile->email ?? '',
                 'major' => $caas->user->profile->major ?? '',
                 'className' => $caas->user->profile->class ?? '',
-                'gems' => $caas->role->name ?? '',
+                'gems' => $caas->role->name ?? 'No Gem',
                 'state' => $caas->user->caasStage->stage->name ?? 'unknown',
                 'status' => $caas->user->caasStage->status ?? 'unknown',
                 'lastActivity' => $caas->user->last_activity,
@@ -77,6 +79,7 @@ class UserCaasController extends Controller
             'email' => 'nullable|string|max:255',
             'major' => 'nullable|string|max:255',
             'className' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -96,18 +99,14 @@ class UserCaasController extends Controller
             'class' => $validated['className'],
         ]);
 
-        $role = Role::firstOrCreate(['name' => 'No Gems']);
-
         Caas::create([
             'user_id' => $user->id,
-            'role_id' => $role->id,
+            'role_id' => null, // Cukup set role_id = null => menandakan "belum memilih gem"
         ]);
 
-        // Default Stage => "Administration"
-        $stage = Stage::firstOrCreate(['name' => 'Administration']);
-        // Atau jika user boleh mengirim state dari FE:
-        // $stageName = $request->input('state', 'Administration');
-        // $stage = Stage::firstOrCreate(['name' => $stageName]);
+        // Jika user tidak mengirim state -> fallback "Administration"
+        $stageName = $validated['state'] ?? 'Administration';
+        $stage = Stage::firstOrCreate(['name' => $stageName]);
 
         // Default status => "unknown"
         $user->caasStage()->create([
@@ -147,7 +146,7 @@ class UserCaasController extends Controller
             'email' => 'nullable|string|max:255',
             'major' => 'nullable|string|max:255',
             'className' => 'nullable|string|max:255',
-            'gems' => 'nullable|string|max:255',
+            'gems' => 'nullable|string|max:255',  // "No Gems" atau nama gem
             'status' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
         ]);
@@ -168,8 +167,17 @@ class UserCaasController extends Controller
             ]
         );
 
-        $role = Role::firstOrCreate(['name' => $validated['gems']]);
-        $caas->update(['role_id' => $role->id]);
+        // Jika admin memasukkan "No Gems", maka role_id = null
+        if (isset($validated['gems']) && strtolower($validated['gems']) === 'no gems') {
+            $caas->role_id = null;
+            $caas->save();
+        } 
+        // Jika admin memasukkan nama gem, kita cari/buat role di DB
+        elseif (!empty($validated['gems'])) {
+            $role = Role::firstOrCreate(['name' => $validated['gems']]);
+            $caas->role_id = $role->id;
+            $caas->save();
+        }
 
         $stage = Stage::firstOrCreate(
             ['name' => $validated['state']], // Search condition
@@ -194,6 +202,7 @@ class UserCaasController extends Controller
     {
         $caas = Caas::findOrFail($id);
         User::destroy($caas->user_id);
+        return response()->json(['success' => 'Deleted'], 200);
     }
 
     public function import(Request $request)
@@ -205,5 +214,114 @@ class UserCaasController extends Controller
         Excel::import(new CaasImport, $request->file('file'));
 
         return response()->json(['success' => 'Successfully imported data'], 200);
+    }
+
+    public function chooseGemView()
+    {
+        // Pastikan user login
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/login')->with('error', 'You must be logged in.');
+        }
+
+        // Cek apakah user sudah punya record Caas
+        $caas = Caas::where('user_id', $user->id)->first();
+
+        // Jika user sudah memilih gem, langsung redirect ke fixGemView
+        if ($caas && $caas->role_id) {
+            return redirect()->route('caas.fix-gem')
+                ->with('error', 'You have already chosen a gem!');
+        }
+
+        // Ambil semua gems
+        $gems = Role::select('id', 'name', 'description', 'image', 'quota')
+            ->orderBy('name')
+            ->get();
+
+        // Tampilkan ke Blade "CaAs.ChooseGem"
+        return view('CaAs.ChooseGem', [
+            'gems'      => $gems,
+            'userGemId' => $caas?->role_id,  // null jika belum memilih
+        ]);
+    }
+
+    /**
+     * Handle the CAAS user picking a gem.
+     */
+    public function pickGem(Request $request)
+    {
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Not authenticated'], 401);
+        }
+
+        // Get / buat record Caas
+        $caas = Caas::where('user_id', $user->id)->first();
+        if (!$caas) {
+            $caas = Caas::create([
+                'user_id' => $user->id,
+                'role_id' => null,
+            ]);
+        }
+
+        // Cek apakah user sudah pernah memilih gem
+        if (!is_null($caas->role_id)) {
+            return response()->json([
+                'error' => 'You have already chosen a gem. It cannot be changed!'
+            ], 409);
+        }
+
+        // DB transaction + lock agar quota tidak bentrok
+        try {
+            DB::transaction(function () use ($caas, $request) {
+                $role = Role::where('id', $request->role_id)
+                    ->lockForUpdate()
+                    ->first(); // or findOrFail
+
+                // Cek quota
+                if ($role->quota < 1) {
+                    throw new \Exception("Gem is out of quota!, kemungkinan ada orang yang bersamaan dengan kamu milihnya, tapi dia duluan. Reload lagi ya");
+                }
+
+                // Assign gem
+                $caas->role_id = $role->id;
+                $caas->save();
+
+                // Decrement gem's quota
+                $role->quota = $role->quota - 1;
+                $role->save();
+            });
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 409);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gem chosen successfully!',
+        ]);
+    }
+
+    /**
+     * Tampilkan konfirmasi gem yang sudah dipilih (FixGem).
+     */
+    public function fixGemView()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/login')->with('error', 'Please login first');
+        }
+
+        $caas = Caas::where('user_id', $user->id)->with('role')->first();
+        if (!$caas || !$caas->role) {
+            // Kalau belum pilih gem, redirect ke pemilihan
+            return redirect('/choose-gem')->with('error', 'Please choose a gem first');
+        }
+
+        $gem = $caas->role;
+        return view('CaAs.FixGem', compact('gem'));
     }
 }

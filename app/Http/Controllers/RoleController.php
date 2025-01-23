@@ -35,7 +35,7 @@ class RoleController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'quota' => 'nullable|int|max:255',
-            'avatar_url' => 'nullable|string|max:255',
+            'image' => 'nullable|string|max:255',
         ]);
 
         Role::create($validated);
@@ -52,7 +52,7 @@ class RoleController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'quota' => 'nullable|int|max:255',
-            'avatar_url' => 'nullable|string|max:255',
+            'image' => 'nullable|string|max:255',
         ]);
 
         Role::findOrFail($id)->update($validated);
@@ -66,5 +66,33 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         Role::destroy($id);
+        return response()->json(['success' => 'Deleted gem'], 200);
+    }
+
+    public function show(string $id)
+    {
+        // Ambil gem yang dimaksud + user CAAS yang mengambil gem ini
+        // with(['caas.user.profile']) -> agar data user & profile ikut di-load
+        $role = Role::with(['caas.user.profile'])->findOrFail($id);
+
+        // Buat array data CAAS
+        // (jika CAAS kosong, berarti belum ada yang memilih gem ini)
+        $caasList = $role->caas->map(function ($caas) {
+            $user = $caas->user;
+            return [
+                'id'        => $caas->id,
+                'nim'       => $user->nim ?? '',
+                'name'      => $user->profile->name  ?? '',
+                'email'     => $user->profile->email ?? '',
+                'major'     => $user->profile->major ?? '',
+                'className' => $user->profile->class ?? '',
+            ];
+        });
+
+        // Tampilkan ke blade "admin.gems-detail" (bebas nama file)
+        return view('admin.gems-detail', [
+            'role'     => $role,
+            'caasList' => $caasList,
+        ]);
     }
 }

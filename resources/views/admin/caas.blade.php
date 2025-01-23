@@ -155,7 +155,7 @@ function manageCaAs() {
         isLoading: false,
         timer: null,
         elapsedTime: 0,
-        
+
         // ----------------------
         // Data terpilih (View/Edit/Delete)
         // ----------------------
@@ -168,11 +168,11 @@ function manageCaAs() {
 
         showSuccessMessage(msg) {
             this.successMessage = msg;
-
+            console.log("Toast set:", msg)
             // Hilangkan toast setelah 3 detik
             setTimeout(() => {
                 this.successMessage = '';
-            }, 3000);
+            }, 5000);
         },
 
         // ----------------------
@@ -290,7 +290,8 @@ function manageCaAs() {
                     email: this.addEmail || 'No Email',
                     major: this.addMajor || 'N/A',
                     password: this.addPassword || 'N/A',
-                    className: this.addClass || 'N/A', // kurang role dan status
+                    className: this.addClass || 'N/A',
+                    state: this.addState || 'Administration',
                 };
 
                 await createCaas(newCaas);
@@ -304,7 +305,7 @@ function manageCaAs() {
                     // Tampilkan default di FE
                     state: this.addState || 'Administration',
                     status: 'unknown',
-                    gems: '',
+                    gems: 'No Gems',
                 });
 
                 this.showSuccessMessage('New CaAs created successfully!');
@@ -316,6 +317,7 @@ function manageCaAs() {
             }
         },
 
+        // Modal "Import Excel"
         async saveImport() {
             console.log("Selected file:", this.chosenFile);
 
@@ -424,7 +426,7 @@ function manageCaAs() {
       ====================================
     -->
     <div 
-        class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md z-50"
+        class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md z-[999]"
         x-show="successMessage !== ''"
         x-cloak
         style="display: none;"
@@ -687,8 +689,8 @@ function manageCaAs() {
                                 class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
                                 x-text="caas.state"
                             ></td>
-                            <!-- Last activity -->
-                            <td 
+                                                        <!-- Last activity -->
+                                                        <td 
                                 class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
                                 x-text="(() => {
                                     let date = new Date(caas.lastActivity * 1000);
@@ -798,10 +800,11 @@ function manageCaAs() {
          MODAL: Set CaAs
          ----------------------------- -->
     <div 
-        class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+    x-cloak
+        class="fixed inset-0 flex items-center justify-center bg-black/50 z-50" 
         x-show="isSetOpen"
         x-transition
-    >
+        >
         <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-lg relative">
             <button 
                 class="absolute top-3 right-3 text-2xl font-bold"
@@ -843,8 +846,8 @@ function manageCaAs() {
     <!-- -----------------------------
          MODAL: Add CaAs
          ----------------------------- -->
-    <div 
-        class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 translate-y-8"
+    <div x-cloak
+        class="fixed inset-0 flex items-center justify-center bg-black/50 z-[999] translate-y-8"
         x-show="isAddOpen"
         x-transition
     >
@@ -951,7 +954,7 @@ function manageCaAs() {
     <!-- -----------------------------
          MODAL: Import Excel
          ----------------------------- -->
-    <div 
+    <div x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isImportOpen"
         x-transition
@@ -973,7 +976,7 @@ function manageCaAs() {
                 Format file:
             </p>
             <div class="bg-custom-gray rounded-2xl p-4 sm:p-6 mb-4 text-biru-tua">
-                <p>NIM, Name, Email, Major, Class, Gems, Status, State</p>
+            <p>NIM, Name, Email, Major, Class, Gems, Status, State</p>
             </div>
 
             <!-- Pilih File -->
@@ -999,7 +1002,6 @@ function manageCaAs() {
             >
                 Import
             </button>
-
             <!-- Loading Indicator -->
             <div x-show="isLoading" class="loading">
                 Importing... Time elapsed: <span x-text="elapsedTime"></span> seconds
@@ -1010,7 +1012,7 @@ function manageCaAs() {
     <!-- -----------------------------
          MODAL: View CaAs
          ----------------------------- -->
-    <div 
+    <div x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isViewOpen"
         x-transition
@@ -1056,6 +1058,7 @@ function manageCaAs() {
          MODAL: Edit CaAs
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 translate-y-8"
         x-show="isEditOpen"
         x-transition
@@ -1173,6 +1176,7 @@ function manageCaAs() {
          MODAL: Confirm Delete
          ----------------------------- -->
     <div 
+    x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isDeleteOpen"
         x-transition

@@ -16,12 +16,10 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name', 50)->unique();
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->string('avatar_url', 255)->nullable();
-            $table->string('photo_character_url', 255)->nullable(); // AKU LIHAT DARI DLOR 2024 ada 2 link atau 3 link, TAPI GATAU KALAU NANTI KALIAN MAUNYA GIMANA gambarnya jadi satu kesatuan apa gimana, INI NANTI MASIH BINGUNG MANA YANG DIBUTUHIN APA JADI SATU ATAU GIMANA ENTAR NYESUAIKAN AJA
-            $table->string('photo_profile_url', 255)->nullable();
-            $table->integer('quota')->nullable(); // hurufnya biar beda sama yang shift yang jadwal 
+            $table->string('image')->nullable();   // Single image field
+            $table->integer('quota')->default(0);  // Quota
         });
     }
 

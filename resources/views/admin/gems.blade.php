@@ -1,24 +1,20 @@
-<!-- resources/views/admin/gems.blade.php -->
-
 @extends('admin.layouts.app')
 
 @section('title', 'Manage Gems - Crystal Cavern')
 
 @push('scripts')
 <script>
-async function createGem(newGemData) {
+async function createGem(formData) {
     try {
         const response = await fetch('/admin/gems', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
-            body: JSON.stringify(newGemData),
+            body: formData,
         });
-
         if (!response.ok) {
-            const errorData = await response.json(); // Get the error message from the server
+            const errorData = await response.json(); 
             throw new Error(errorData.error || 'Failed to create Gem');
         }
     } catch (error) {
@@ -27,18 +23,17 @@ async function createGem(newGemData) {
     }
 }
 
-async function updateGem(gemId, updatedData) {
+async function updateGem(gemId, formData) {
+    // If your routes expect PATCH, we can do an override:
+    formData.append('_method', 'PATCH'); // or 'PUT'
     try {
-        updatedData._method = "patch";
         const response = await fetch(`/admin/gems/${gemId}`, {
-            method: 'POST',
+            method: 'POST', 
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
-            body: JSON.stringify(updatedData),
+            body: formData,
         });
-
         if (!response.ok) {
             throw new Error('Failed to update Gem');
         }
@@ -55,7 +50,6 @@ async function deleteGem(gemId) {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             },
         });
-
         if (!response.ok) {
             throw new Error('Failed to delete Gem');
         }
@@ -66,17 +60,17 @@ async function deleteGem(gemId) {
 
 function manageGems() {
     return {
-        // ----------------------
+        // ------------------------------------------------
         // Data & Pagination
-        // ----------------------
+        // ------------------------------------------------
         gemsList: @json($rolesList),
         showEntries: 10,
         searchTerm: '',
         currentPage: 1,
 
-        // ----------------------
+        // ------------------------------------------------
         // Modal flags
-        // ----------------------
+        // ------------------------------------------------
         isAddOpen: false,
         isViewOpen: false,
         isEditOpen: false,
@@ -86,17 +80,17 @@ function manageGems() {
         addName: '',
         addDescription: '',
         addQuota: '',
-        addImage: null,
+        addFile: null,        // store actual File object
+        addFilePreview: null, // store local URL for preview
 
         // Data terpilih (View/Edit/Delete)
         selectedGem: null,
+        editFile: null,
+        editFilePreview: null,
 
-        // Temporary holder for "Edit" image
-        editImage: null,
-
-        // ----------------------
+        // ------------------------------------------------
         // Computed / Getter
-        // ----------------------
+        // ------------------------------------------------
         get filteredList() {
             const term = this.searchTerm.toLowerCase().trim();
             if (!term) return this.gemsList;
@@ -122,9 +116,9 @@ function manageGems() {
             return `Showing ${start} to ${end} of ${this.filteredList.length} entries`;
         },
 
-        // ----------------------
+        // ------------------------------------------------
         // Methods: Pagination
-        // ----------------------
+        // ------------------------------------------------
         goToPage(page) {
             if (page >= 1 && page <= this.totalPages) {
                 this.currentPage = page;
@@ -141,91 +135,107 @@ function manageGems() {
             }
         },
 
-        // ----------------------
+        // ------------------------------------------------
         // Methods: Add Gem
-        // ----------------------
+        // ------------------------------------------------
         resetAddForm() {
             this.addName = '';
             this.addDescription = '';
             this.addQuota = '';
-            this.addImage = null;
+            this.addFile = null;
+            this.addFilePreview = null;
         },
-        handleAddImage(event) {
+        handleAddFile(event) {
             const file = event.target.files[0];
-            if (!file) {
-                this.addImage = null;
-                return;
+            if (file) {
+                this.addFile = file;
+                this.addFilePreview = URL.createObjectURL(file);
+            } else {
+                this.addFile = null;
+                this.addFilePreview = null;
             }
-            const reader = new FileReader();
-            reader.onload = e => {
-                this.addImage = e.target.result; // Data URL
-            };
-            reader.readAsDataURL(file);
         },
-        saveAddGem() {
-            createGem({
-                name: this.addName || 'No Name',
-                description: this.addDescription || 'No Description',
-                quota: parseInt(this.addQuota) || 0,
-                image: this.addImage || '',
-            });
+        async saveAddGem() {
+            const formData = new FormData();
+            formData.append('name', this.addName || 'No Name');
+            formData.append('description', this.addDescription || '');
+            formData.append('quota', this.addQuota || '0');
+
+            if (this.addFile) {
+                formData.append('image', this.addFile);
+            }
+
+            await createGem(formData);
+
+            // Optionally push a new item to the local array
+            // (But best practice: you might re-fetch the list from server)
+            const newId = this.gemsList.length > 0
+                ? Math.max(...this.gemsList.map(gem => gem.id)) + 1
+                : 1;
 
             this.gemsList.push({
-                id: this.gemsList.length > 0
-                        ? Math.max(...this.gemsList.map(gem => gem.id)) + 1
-                        : 1, // If the list is empty, start with 1
-                name: this.addName || 'No Name',
-                description: this.addDescription || 'No Description',
+                id: newId,
+                name: this.addName,
+                description: this.addDescription,
                 quota: parseInt(this.addQuota) || 0,
-                image: this.addImage || ''
+                // We can't know the final path from the server 
+                // unless we refetch. We'll guess "unknown" or empty.
+                image: this.addFilePreview || '',
             });
+
             this.isAddOpen = false;
             this.resetAddForm();
         },
 
-        // ----------------------
+        // ------------------------------------------------
         // Methods: View/Edit/Delete
-        // ----------------------
+        // ------------------------------------------------
         viewGem(gem) {
             this.selectedGem = JSON.parse(JSON.stringify(gem));
             this.isViewOpen = true;
         },
         editGem(gem) {
-            // Salin data gem ke selectedGem
             this.selectedGem = JSON.parse(JSON.stringify(gem));
-            // Set editImage = null (belum upload)
-            this.editImage = null;
+            this.editFile = null;
+            this.editFilePreview = null;
             this.isEditOpen = true;
         },
-        handleEditImage(event) {
+        handleEditFile(event) {
             const file = event.target.files[0];
-            if (!file) {
-                this.editImage = null;
+            if (file) {
+                this.editFile = file;
+                this.editFilePreview = URL.createObjectURL(file);
+            } else {
+                this.editFile = null;
+                this.editFilePreview = null;
+            }
+        },
+        async saveEditGem() {
+            const index = this.gemsList.findIndex(g => g.id === this.selectedGem.id);
+            if (index === -1) {
+                this.isEditOpen = false;
+                this.selectedGem = null;
                 return;
             }
-            const reader = new FileReader();
-            reader.onload = e => {
-                this.editImage = e.target.result; 
-            };
-            reader.readAsDataURL(file);
-        },
-        saveEditGem() {
-            const index = this.gemsList.findIndex(g => g.id === this.selectedGem.id);
-            if (index !== -1) {
-                // Jika user upload gambar baru, gantikan image lama
-                if (this.editImage) {
-                    this.selectedGem.image = this.editImage;
-                }
 
-                updateGem(this.selectedGem.id, {
-                    name: this.selectedGem.name,
-                    description: this.selectedGem.description || 'No Description',
-                    quota: parseInt(this.selectedGem.quota) || 0,
-                    avatar_url: this.selectedGem.image || ''
-                });
-                
-                this.gemsList[index] = { ...this.selectedGem };
+            const formData = new FormData();
+            formData.append('name', this.selectedGem.name);
+            formData.append('description', this.selectedGem.description || '');
+            formData.append('quota', this.selectedGem.quota || '0');
+
+            if (this.editFile) {
+                formData.append('image', this.editFile);
             }
+
+            await updateGem(this.selectedGem.id, formData);
+
+            // Update local list
+            if (this.editFilePreview) {
+                this.selectedGem.image = this.editFilePreview;
+            }
+
+            this.gemsList[index] = { ...this.selectedGem };
+
             this.isEditOpen = false;
             this.selectedGem = null;
         },
@@ -233,11 +243,15 @@ function manageGems() {
             this.selectedGem = { ...gem };
             this.isDeleteOpen = true;
         },
-        deleteGem() {
-            deleteGem(this.selectedGem.id);
+        async deleteGem() {
+            await deleteGem(this.selectedGem.id);
             this.gemsList = this.gemsList.filter(g => g.id !== this.selectedGem.id);
             this.isDeleteOpen = false;
             this.selectedGem = null;
+        },
+        goDetail(gem) {
+            // Pindah ke /admin/gems/{gem.id}
+            window.location.href = `/admin/gems/${gem.id}`;
         },
     }
 }
@@ -249,12 +263,12 @@ function manageGems() {
     class="relative w-full max-w-screen-2xl mx-auto px-4 sm:px-6 md:px-8 py-6"
     x-data="manageGems()"
 >
-    <!-- Header / Judul Halaman -->
+    <!-- Header / Title -->
     <h1 class="text-center text-white text-3xl sm:text-4xl md:text-5xl font-im-fell-english mt-4">
         Manage Gems
     </h1>
 
-    <!-- Tombol utama (1 tombol: Add Gem) -->
+    <!-- Add Gem Button -->
     <div class="mt-8 bg-abu-abu-keunguan rounded-2xl p-6 sm:p-8">
         <div class="flex justify-center items-center">
             <button
@@ -268,7 +282,7 @@ function manageGems() {
         </div>
     </div>
 
-    <!-- Statistik (opsional) -->
+    <!-- Simple Stats -->
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
         <!-- Total -->
         <div class="bg-abu-abu-keunguan rounded-2xl p-4 sm:p-6 flex flex-col items-center">
@@ -299,7 +313,7 @@ function manageGems() {
         </div>
     </div>
 
-    <!-- Tabel Data Gems -->
+    <!-- Gem Table -->
     <div class="mt-8 bg-custom-gray rounded-2xl p-4 sm:p-6 md:p-8">
         <!-- Show Entries & Search -->
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
@@ -337,35 +351,28 @@ function manageGems() {
         <!-- Table -->
         <div class="overflow-x-auto">
             <table class="min-w-full border border-black rounded-md overflow-hidden table-auto">
-                <!-- Thead -->
                 <thead class="bg-white">
                     <tr class="border-b border-black">
-                        <!-- No. -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua 
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
                             No.
                         </th>
-                        <!-- Gem Name -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua 
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
                             Name
                         </th>
-                        <!-- Image -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua 
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
                             Image
                         </th>
-                        <!-- Description -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua 
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
                             Description
                         </th>
-                        <!-- Quota -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua 
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
                             Quota
                         </th>
-                        <!-- Action -->
                         <th class="py-3 px-3 text-biru-tua font-im-fell-english 
                                    text-sm sm:text-base md:text-lg">
                             Action
@@ -373,7 +380,6 @@ function manageGems() {
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    <!-- Loop data (paginatedData) -->
                     <template x-for="(gem, i) in paginatedData" :key="gem.id">
                         <tr class="border-b border-black last:border-b-0">
                             <!-- No. -->
@@ -386,7 +392,7 @@ function manageGems() {
                                        font-im-fell-english text-sm sm:text-base"
                                 x-text="gem.name"
                             ></td>
-                            <!-- Image (thumbnail) -->
+                            <!-- Image -->
                             <td class="py-3 px-3 border-r border-black text-biru-tua 
                                        font-im-fell-english text-sm sm:text-base">
                                 <template x-if="gem.image">
@@ -434,6 +440,14 @@ function manageGems() {
                                     >
                                         Erase
                                     </button>
+                                    <!-- TOMBOL BARU: Detail -->
+                                   <button 
+                                        class="bg-abu-abu2 rounded-[15px] px-3 py-1 
+                                              text-biru-tua hover:opacity-90 hover:shadow-md transition"
+                                                @click="goDetail(gem)"
+                                     >
+                                        Detail
+                                     </button>
                                 </div>
                             </td>
                         </tr>
@@ -442,12 +456,11 @@ function manageGems() {
             </table>
         </div>
 
-        <!-- Info 'Showing x to y of z entries' -->
+        <!-- Pagination info -->
         <div class="mt-4 text-sm sm:text-base text-biru-tua" x-text="showingText"></div>
 
-        <!-- Navigasi pagination -->
+        <!-- Pagination nav -->
         <div class="mt-2 flex items-center space-x-2 text-sm sm:text-base text-biru-tua">
-            <!-- Tombol Previous -->
             <button 
                 class="px-2 py-1 border rounded disabled:opacity-50"
                 :disabled="currentPage <= 1"
@@ -455,7 +468,6 @@ function manageGems() {
             >
                 Previous
             </button>
-            <!-- Angka halaman -->
             <template x-for="page in totalPages" :key="page">
                 <button 
                     class="px-2 py-1 border rounded"
@@ -464,7 +476,6 @@ function manageGems() {
                     x-text="page"
                 ></button>
             </template>
-            <!-- Tombol Next -->
             <button 
                 class="px-2 py-1 border rounded disabled:opacity-50"
                 :disabled="currentPage >= totalPages"
@@ -481,12 +492,12 @@ function manageGems() {
 
     <!-- MODAL: Add Gem -->
     <div 
+        x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isAddOpen"
         x-transition
     >
         <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-lg relative">
-            <!-- Close -->
             <button 
                 class="absolute top-3 right-3 text-2xl font-bold"
                 @click="isAddOpen = false; resetAddForm();"
@@ -519,7 +530,7 @@ function manageGems() {
                         min="0"
                         class="w-full bg-custom-gray rounded-2xl p-3"
                         x-model="addQuota"
-                        placeholder="Enter quantity..."
+                        placeholder="Enter quota..."
                     >
                 </div>
                 <!-- Description -->
@@ -538,8 +549,16 @@ function manageGems() {
                         type="file"
                         accept="image/*"
                         class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
-                        @change="handleAddImage($event)"
+                        @change="handleAddFile($event)"
                     >
+                    <!-- Optional: Preview -->
+                    <template x-if="addFilePreview">
+                        <img 
+                            :src="addFilePreview" 
+                            alt="Preview" 
+                            class="mt-3 h-24 w-24 object-cover rounded-md border"
+                        />
+                    </template>
                 </div>
             </div>
 
@@ -557,12 +576,12 @@ function manageGems() {
 
     <!-- MODAL: View Gem -->
     <div 
+        x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isViewOpen"
         x-transition
     >
         <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-md relative">
-            <!-- Close -->
             <button 
                 class="absolute top-3 right-3 text-2xl font-bold"
                 @click="isViewOpen = false; selectedGem = null;"
@@ -600,12 +619,12 @@ function manageGems() {
 
     <!-- MODAL: Edit Gem -->
     <div 
+        x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isEditOpen"
         x-transition
     >
         <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-lg relative">
-            <!-- Close -->
             <button 
                 class="absolute top-3 right-3 text-2xl font-bold"
                 @click="isEditOpen = false; selectedGem = null;"
@@ -656,28 +675,35 @@ function manageGems() {
                             x-model="selectedGem.description"
                         ></textarea>
                     </div>
-                    <!-- Preview Gambar Lama (jika ada) -->
+                    <!-- Current Image -->
                     <div class="sm:col-span-2">
                         <p class="text-white text-xl mb-2">Current Image:</p>
-                        <template x-if="selectedGem.image">
+                        <template x-if="selectedGem.image && !editFilePreview">
                             <img 
                                 :src="selectedGem.image"
                                 alt="Gem Image"
                                 class="h-24 w-24 object-cover rounded-md border mb-2"
                             />
                         </template>
-                        <template x-if="!selectedGem.image">
+                        <template x-if="editFilePreview">
+                            <img 
+                                :src="editFilePreview"
+                                alt="New Preview"
+                                class="h-24 w-24 object-cover rounded-md border mb-2"
+                            />
+                        </template>
+                        <template x-if="!selectedGem.image && !editFilePreview">
                             <span class="text-gray-200 italic">No Image</span>
                         </template>
                     </div>
-                    <!-- Upload Baru (untuk Ganti Gambar) -->
+                    <!-- Upload New Image -->
                     <div class="sm:col-span-2">
                         <label class="block text-xl mb-1 text-white">Update Image (Optional)</label>
                         <input 
                             type="file"
                             accept="image/*"
                             class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
-                            @change="handleEditImage($event)"
+                            @change="handleEditFile($event)"
                         >
                     </div>
                 </div>
@@ -696,12 +722,12 @@ function manageGems() {
 
     <!-- MODAL: Confirm Delete -->
     <div 
+        x-cloak
         class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
         x-show="isDeleteOpen"
         x-transition
     >
         <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-md relative">
-            <!-- Close -->
             <button 
                 class="absolute top-3 right-3 text-2xl font-bold"
                 @click="isDeleteOpen = false; selectedGem = null;"
