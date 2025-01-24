@@ -81,14 +81,14 @@
 
 @php
     $navItems = [
-    'Home' => route('admin.home'),
-    'Dashboard' => route('admin.dashboard'),
-    'Announcement' => route('admin.announcement'),
-    'Manage CaAs' => route('admin.caas'),
-    'Manage Asisten' => route('admin.asisten'),
-    'Manage Gems' => route('admin.gems'),
-    'Manage Shift' => route('admin.shift'),
-    'View Plots' => route('admin.view-plot'),
+        'Home' => route('admin.home'),
+        'Dashboard' => route('admin.dashboard'),
+        'Announcement' => route('admin.announcement'),
+        'Manage CaAs' => route('admin.caas'),
+        'Manage Asisten' => route('admin.asisten'),
+        'Manage Gems' => route('admin.gems'),
+        'Manage Shift' => route('admin.shift'),
+        'View Plots' => route('admin.view-plot'),
     ];
 @endphp
 

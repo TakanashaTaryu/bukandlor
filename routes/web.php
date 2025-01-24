@@ -1,5 +1,3 @@
-<!-- routes/web.php -->
-
 <?php
 
 use App\Http\Controllers\AnnouncementController;
@@ -14,17 +12,6 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\Auth\AdminProfileController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::middleware('guest')->group(function () {
     Route::view('/', 'CaAs.LandingCaas');
@@ -104,6 +91,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
                 'store' => "$key.store",
                 'destroy' => "$key.delete",
                 'update' => "$key.update",
+                'show' => "$key.show",
             ]);
     }
 });
