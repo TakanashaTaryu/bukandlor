@@ -13,37 +13,12 @@
     @for ($i = 1; $i <= 87; $i++)
         <link rel="preload" href="{{ asset("assets/profilasisten/Asisten ($i).webp") }}" as="image">
     @endfor
-    
-
-    <!-- Preload Fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rye&display=swap" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" as="style">
-
-    <!-- Preload JavaScript and CSS -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" as="style">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" as="style">
-    <link rel="preload" href="https://code.jquery.com/jquery-3.6.0.min.js" as="script">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" as="script">
-
-    <!-- Load CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script defer src="{{ asset('js/slider2.js') }}"></script>
-    <style>
-        /* this fixes thing in firefox */
-        #btn {
-            align-items: center;
-            justify-content: center;
-            height: 60px;
-        } 
-</style>
 </head>
 
 
@@ -81,16 +56,16 @@
                     </div>
                     @for ($i = 2; $i <= 87; $i++)
                         <div class="relative w-[380px] mx-auto">
-                            <img src="{{ asset("assets/profilasisten/Asisten ($i).webp") }}" alt="Assistant" class="w-[200px]">
+                            <img src="{{ asset("assets/profilasisten/Asisten ($i).webp") }}" alt="Assistant" class="w-[200px]" >
                         </div>
                     @endfor
                 </div>
-                <div class="flex justify-center h-[60px]" id="btn">
+                <div class="flex justify-center h-[60px]">
                     <button class="owl-prev py-1 hover:scale-105 hover:brightness-110 active:scale-95" type="button">
-                        <img src="assets/Prev.webp" alt="Prev" class="h-full" id="btn">
+                        <img src="assets/Prev.webp" alt="Prev" class="h-[60px]">
                     </button>
                     <button class="owl-next py-1 hover:scale-105 hover:brightness-110 active:scale-95" type="button" onclick="moveCardDown()">
-                        <img src="assets/Next.webp" alt="Next" class="h-full" id="btn">
+                        <img src="assets/Next.webp" alt="Next" class="h-[60px]">
                     </button>
                 </div>
             </div>
