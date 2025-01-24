@@ -5,12 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistants Page</title>
+
+    <!-- Preload Critical Images -->
+    <link rel="preload" href="{{ asset('assets/Wall2.webp') }}" as="image">
+    <link rel="preload" href="{{ asset('assets/Crystal 3.webp') }}" as="image">
+    <link rel="preload" href="{{ asset('assets/Light.webp') }}" as="image">
+    @for ($i = 1; $i <= 87; $i++)
+        <link rel="preload" href="{{ asset("assets/profilasisten/Asisten ($i).webp") }}" as="image">
+    @endfor
+    
+
+    <!-- Preload Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rye&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" as="style">
+
+    <!-- Preload JavaScript and CSS -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" as="style">
+    <link rel="preload" href="https://code.jquery.com/jquery-3.6.0.min.js" as="script">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" as="script">
+
+    <!-- Load CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script defer src="{{ asset('js/slider2.js') }}"></script>
+    <style>
+        /* this fixes thing in firefox */
+        #btn {
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+        } 
+</style>
 </head>
+
 
 <body
     class="bg-AssistantsPage bg-cover bg-fixed bg-no-repeat min-h-screen max-w-full scroll-x-hide text-white overflow-hidden">
@@ -42,15 +77,20 @@
                 </div>
                 <div class="owl-carousel owl-theme justify-evenly mx-auto my-8" id="carouselContainer">
                     <div class="relative w-[380px] mx-auto -translate-y-14" id="firstCard">
-                        <img src="assets/profilasisten/Asisten (1).webp" alt="Assistant" class="w-[200px]">
+                        <img src="{{ asset("assets/profilasisten/Asisten (1).webp") }}" alt="Assistant" class="w-[200px]">
                     </div>
+                    @for ($i = 2; $i <= 87; $i++)
+                        <div class="relative w-[380px] mx-auto">
+                            <img src="{{ asset("assets/profilasisten/Asisten ($i).webp") }}" alt="Assistant" class="w-[200px]">
+                        </div>
+                    @endfor
                 </div>
-                <div class="flex justify-center h-[60px]">
+                <div class="flex justify-center h-[60px]" id="btn">
                     <button class="owl-prev py-1 hover:scale-105 hover:brightness-110 active:scale-95" type="button">
-                        <img src="assets/Prev.webp" alt="Prev" class="h-full">
+                        <img src="assets/Prev.webp" alt="Prev" class="h-full" id="btn">
                     </button>
                     <button class="owl-next py-1 hover:scale-105 hover:brightness-110 active:scale-95" type="button" onclick="moveCardDown()">
-                        <img src="assets/Next.webp" alt="Next" class="h-full ">
+                        <img src="assets/Next.webp" alt="Next" class="h-full" id="btn">
                     </button>
                 </div>
             </div>
@@ -59,36 +99,6 @@
 
     <x-sidebar></x-sidebar>
     <x-home-button></x-home-button>
-    
-    <script>
-        //Card Generator
-        document.addEventListener("DOMContentLoaded", () => {
-        const totalImages = 87;
-
-        const carouselContainer = document.getElementById("carouselContainer");
-
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 2; i <= totalImages; i++) {
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "relative w-[380px] mx-auto";
-
-            const img = document.createElement("img");
-            img.src = `assets/profilasisten/Asisten (${i}).webp`;
-            img.alt = "Assistant";
-            img.className = "w-[200px]";
-
-            cardDiv.appendChild(img);
-            fragment.appendChild(cardDiv);
-        }
-
-        carouselContainer.appendChild(fragment);
-        });
-
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-    <script src="{{ asset('js/slider2.js') }}"></script>
 </body>
 
 </html>

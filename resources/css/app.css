@@ -115,3 +115,9 @@
         @apply cursor-Wand;
     }
 }
+
+@supports (-webkit-touch-callout: none) {
+    body {
+        background-attachment: scroll !important;
+    }
+}

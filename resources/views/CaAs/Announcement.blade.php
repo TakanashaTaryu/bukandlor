@@ -9,11 +9,11 @@
 @php
     $user = Auth::user();
     $announcement = App\Models\Announcement::find(1);
-    if ($announcement) {
-        $message = $user->caasStage->status === "Fail" 
-            ? $announcement->fail_message 
-            : $announcement->success_message;
-    }
+    $announcement = App\Models\Announcement::find(1);
+    $message = $announcement 
+        ? ($user->caasStage->status === "Fail" ? $announcement->fail_message : $announcement->success_message)
+        : "Unknown";
+    $link = ($announcement && $user->caasStage->status !== "Fail") ? $announcement->link : "";
     $name = $user->profile->name ?? $user->nim;
 @endphp
 <body class="bg-Announcement bg-cover bg-center bg-fixed bg-no-repeat min-h-screen max-w-full scroll-x-hide text-primary overflow-hidden flex items-center justify-center relative">
@@ -34,17 +34,24 @@
                 <h2 class="text-md lg:text-lg text-left font-bold mb-5">
                     Congratulations,
                     <br>
-                    STEVANNIE PRATAMA
+                    {{ $name }}
                 </h2>
                 <p class="text-xs lg:text-sm text-justify font-im-fell-english">
                     {!! $message !!}
+                    <br>
+                    <br>
+                    <a href="{{ e($link) }}" class="text-blue-500 underline hover:text-blue-700">{{ $link }}</a>
                 </p>
             </div>
             <div class="absolute bottom-28 mr-16">
+
+                <!-- TODO BUAT SHIFT/GEM -->
+                
                 <button class="relative text-primary transition-all duration-300 ease-in-out transform hover:scale-105 hover:brightness-150 active:scale-95 list-none">
                     <img src="assets/Button Pink.webp" alt="No" class="w-[150px]">
                     <p class="absolute inset-0 flex items-center justify-center text-lg font-bold">Shift</p>
                 </button>
+
             </div>
             <div class="absolute bottom-[70px] ml-56">
                 <img src="assets/Sign DLOR.webp" alt="" class="w-[120px]">

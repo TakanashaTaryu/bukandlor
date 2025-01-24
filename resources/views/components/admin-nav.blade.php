@@ -95,7 +95,7 @@
 {{-- SIDEBAR (fixed) --}}
 <aside
     x-cloak
-    class="fixed top-20 md:top-24 left-0 w-48 sm:w-56 md:w-64 h-full bg-black/40 z-40 transform transition-transform duration-300 backdrop-blur-sm"
+    class="fixed top-20 md:top-26 left-0 w-48 sm:w-56 md:w-64 h-full bg-black/40 z-40 transform transition-transform duration-300 backdrop-blur-sm"
     :class="open ? 'translate-x-0' : '-translate-x-full'">
     <nav class="py-6 md:py-8 flex flex-col space-y-4 md:space-y-6">
         @foreach($navItems as $label => $url)
