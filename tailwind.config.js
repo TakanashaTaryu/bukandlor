@@ -18,7 +18,7 @@ export default {
                 'PlaceHolder': "url('../../public/assets/login-placeholder.webp')",
                 'Button': "url('../../public/assets/Button Pink.webp')",
                 'LoginAdmin': "url('../../public/assets/Background 1.webp')",
-            'LoginCaAs': "url('../../public/assets/Background 2.webp')",
+                'LoginCaAs': "url('../../public/assets/Background 2.webp')",
                 'HomePageCaAs': "url('../../public/assets/Background 2.webp')",
                 'ChangePassword' : "url('../../public/assets/Background 2.webp')",
                 'AssistantsPage' : "url('../../public/assets/Background 3.webp')",
@@ -65,11 +65,8 @@ export default {
             },
             screens: {
                 'xs': '391px',
-
                 'sm': '576px',
-          
                 'md': '960px',
-          
                 'lg': '1440px',
             },
         },

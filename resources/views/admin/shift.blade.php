@@ -169,19 +169,9 @@
                 </button>
             </form>
 
-            <!-- View Plot -->
-            <a href="{{ route('admin.view-plot') }}"
-               class="flex-1 bg-hijau-tua text-white font-im-fell-english
-                      rounded-[30px] py-4 sm:py-6 md:py-6
-                      text-lg sm:text-2xl md:text-3xl text-center
-                      hover:opacity-90 hover:shadow-lg transition"
-            >
-                View Plot
-            </a>
-
             <!-- Add Shift (open modal) -->
             <button
-            x-cloak
+                x-cloak
                 class="flex-1 bg-custom-green text-white font-im-fell-english
                        rounded-[30px] py-4 sm:py-6 md:py-6
                        text-lg sm:text-2xl md:text-3xl text-center
@@ -190,6 +180,27 @@
             >
                 Add Shift
             </button>
+
+            <!-- Import Excel -->
+            <button
+                x-cloak
+                class="flex-1 bg-hijau-tua text-white font-im-fell-english
+                       rounded-[30px] py-4 sm:py-6 md:py-6
+                       text-lg sm:text-2xl md:text-3xl text-center
+                       hover:opacity-90 hover:shadow-lg transition"
+                @click="isAddOpen = true"
+            >
+                Import Excel
+            </button>
+            <!-- View Plot -->
+            <a href="{{ route('admin.view-plot') }}"
+               class="flex-1 bg-ungu-muda text-white font-im-fell-english
+                      rounded-[30px] py-4 sm:py-6 md:py-6
+                      text-lg sm:text-2xl md:text-3xl text-center
+                      hover:opacity-90 hover:shadow-lg transition"
+            >
+                View Plot
+            </a>
         </div>
     </div>
 

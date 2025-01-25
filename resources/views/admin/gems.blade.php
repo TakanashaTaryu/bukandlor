@@ -179,7 +179,7 @@ function manageGems() {
                 description: this.addDescription,
                 quota: parseInt(this.addQuota) || 0,
                 // We can't know the final path from the server 
-                // unless we refetch. We'll guess "unknown" or empty.
+                // unless we refetch. We'll guess "Unknown" or empty.
                 image: this.addFilePreview || '',
             });
 

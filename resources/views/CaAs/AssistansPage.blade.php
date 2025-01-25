@@ -20,8 +20,6 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <script defer src="{{ asset('js/slider2.js') }}"></script>
 </head>
-
-
 <body
     class="bg-AssistantsPage bg-cover bg-fixed bg-no-repeat min-h-screen max-w-full scroll-x-hide text-white overflow-hidden">
 
@@ -50,7 +48,7 @@
                     <h1 class="text-2xl font-crimson-text pb-2">Daskom Laboratory</h1>
                     <h1 class="text-4xl">Assistants 2025</h1>
                 </div>
-                <div class="owl-carousel owl-theme justify-evenly mx-auto my-8" id="carouselContainer">
+                <div class="owl-carousel owl-theme justify-evenly mx-auto my-8 -translate-x-4" id="carouselContainer">
                     <div class="relative w-[380px] mx-auto -translate-y-14" id="firstCard">
                         <img src="{{ asset("assets/profilasisten/Asisten (1).webp") }}" alt="Assistant" class="w-[200px]">
                     </div>

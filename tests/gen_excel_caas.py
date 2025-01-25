@@ -7,7 +7,7 @@ fake = Faker()
 
 # Define possible values for 'Gems', 'Status', and 'State'
 gems_options = ['Ruby', 'Sapphire', 'Emerald', 'Diamond']
-status_options = ['Pass', 'Fail', 'unknown']
+status_options = ['Pass', 'Fail', 'Unknown']
 state_options = [
                     'Administration',
                     'Coding & Writing Test',

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('major', 100)->nullable();
             $table->string('email', 100)->nullable();
             $table->string('class', 50)->nullable();
+            $table->string('gender', 10)->nullable();
         });
     }
 

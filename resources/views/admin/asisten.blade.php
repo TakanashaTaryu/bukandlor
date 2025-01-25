@@ -378,7 +378,7 @@ function manageAsisten() {
 
     <!-- Tombol utama -->
     <div class="mt-8 bg-abu-abu-keunguan rounded-2xl p-6 sm:p-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Set Asisten -->
             <button
                 class="bg-merah-tua rounded-[30px] py-3 sm:py-4 
@@ -398,14 +398,14 @@ function manageAsisten() {
                 Add Asisten Account
             </button>
             <!-- Import Excel -->
-            <button
+            <!-- <button
                 class="bg-hijau-tua rounded-[30px] py-3 sm:py-4 
                        text-white text-lg sm:text-2xl md:text-3xl font-im-fell-english
                        hover:opacity-90 hover:shadow-lg transition w-full"
                 @click="isImportOpen = true"
             >
                 Import Excel
-            </button>
+            </button> -->
         </div>
     </div>
 

@@ -14,9 +14,8 @@
 </head>
 <body
     x-data="{ open: false, isProfileOpen: false }"
-    class="relative min-h-screen"
+    class="relative min-h-screen bg-cover bg-center bg-no-repeat bg-LoginAdmin"
 >
-<canvas id="webgl-canvas" class="absolute w-screen h-screen top-0 -z-10"></canvas>
 <!-- Overlay (lapisan abu-abu 40%) -->
 <div class="absolute inset-0 bg-custom-gray opacity-40 z-0"></div>
 
@@ -41,7 +40,6 @@
     </p>
 </footer>
 </div>
-    <x-admin-background/>
     @stack('scripts')
 </body>
 </html>

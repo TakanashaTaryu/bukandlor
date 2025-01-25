@@ -32,6 +32,7 @@ class CaasImport implements ToModel, WithHeadingRow
                 'major' => $row['major'],
                 'class' => $row['class'],
                 'email' => $row['email'],
+                'gender' => $row['gender'],
             ]
         );
 

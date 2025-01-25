@@ -128,7 +128,7 @@
                                 'text-biru-tua' => !in_array(strtolower($caas->status ?? ''), ['pass', 'fail'])
                             ])
                         >
-                            {{ $caas->status ?? 'unknown' }}
+                            {{ $caas->status ?? 'Unknown' }}
                         </td>
                         <!-- State -->
                         <td class="py-3 px-3 text-biru-tua text-center">

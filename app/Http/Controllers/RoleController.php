@@ -19,7 +19,7 @@ class RoleController extends Controller
                 'id' => $role->id,
                 'name' => $role->name,
                 'quota' => $role->quota ?? 0,
-                'image' => $role->avatar_url ?? '',
+                'image' => $role->image ?? '',
                 'description' => $role->description ?? '',
             ];
         });

@@ -143,9 +143,19 @@ function manageCaAs() {
         // Tambahkan dummy option paling awal
         statuses: [
             '-- Pilih Status --',
-            'unknown',
+            'Unknown',
             'Pass',
             'Fail',
+        ],
+
+        gems: [
+            '-- Pilih Gem --',
+            'No Gem',
+            'Fire Opal',
+            'Radiant Quartz',
+            'Crystal Of The Prism',
+            'Moonstone',
+            'Opal Gem',
         ],
 
         // ----------------------
@@ -189,7 +199,8 @@ function manageCaAs() {
                 item.className.toLowerCase().includes(term) ||
                 item.gems.toLowerCase().includes(term) ||
                 item.status.toLowerCase().includes(term) ||
-                item.state.toLowerCase().includes(term)
+                item.state.toLowerCase().includes(term) ||
+                item.gender.toLowerCase().includes(term)
             );
 
             // 2. Sorting
@@ -256,6 +267,7 @@ function manageCaAs() {
             this.addMajor = '';
             this.addClass = '';
             this.addState = '';
+            this.addGender = '';
         },
         // Reset file import
         resetImport() {
@@ -289,6 +301,7 @@ function manageCaAs() {
                     name: this.addName || 'No Name',
                     email: this.addEmail || 'No Email',
                     major: this.addMajor || 'N/A',
+                    gender: this.addGender || 'N/A',
                     password: this.addPassword || 'N/A',
                     className: this.addClass || 'N/A',
                     state: this.addState || 'Administration',
@@ -303,9 +316,10 @@ function manageCaAs() {
                         : 1,
                     ...newCaas,
                     // Tampilkan default di FE
-                    state: this.addState || 'Administration',
-                    status: 'unknown',
-                    gems: 'No Gems',
+                    status: 'Unknown',
+                    gems: 'No Gem',
+                    lastActivity: Math.floor(Date.now() / 1000),
+                    lastSeenAnnouncement: 0,
                 });
 
                 this.showSuccessMessage('New CaAs created successfully!');
@@ -384,6 +398,7 @@ function manageCaAs() {
                         gems: this.selectedCaas.gems,
                         status: this.selectedCaas.status,
                         state: this.selectedCaas.state,
+                        gender: this.selectedCaas.gender,
                     });
                     this.caasList[index] = { ...this.selectedCaas };
                     this.showSuccessMessage('CaAs updated successfully!');
@@ -443,7 +458,7 @@ function manageCaAs() {
 
     <!-- Tombol utama -->
     <div class="mt-8 bg-abu-abu-keunguan rounded-2xl p-6 sm:p-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Set CaAs -->
             <button
                 class="bg-merah-tua rounded-[30px] py-3 sm:py-4 
@@ -470,6 +485,13 @@ function manageCaAs() {
                 @click="isImportOpen = true"
             >
                 Import Excel
+            </button>
+            <button
+                class="bg-ungu-muda rounded-[30px] py-3 sm:py-4 
+                       text-white text-lg sm:text-2xl md:text-3xl font-im-fell-english
+                       hover:opacity-90 hover:shadow-lg transition w-full"
+            >
+                Export Excel
             </button>
         </div>
     </div>
@@ -562,6 +584,8 @@ function manageCaAs() {
                         <option value="gems">Gems</option>
                         <option value="status">Status</option>
                         <option value="state">State</option>
+                        <option value="lastActivity">Last Activity</option>
+                        <option value="lastSeenAnnouncement">Last Seen Announcement</option>
                     </select>
                 </div>
                 <!-- Order Asc/Desc -->
@@ -622,13 +646,16 @@ function manageCaAs() {
                         <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
                             State
                         </th>
+                        <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
+                            Gender
+                        </th>
                         <!-- Last activity -->
                         <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
                             Last Activity
                         </th>
                         <!-- Last seen announcement -->
-                        <th class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
-                            Read Announcement
+                        <th class="py-2 border-r border-black text-biru-tua font-im-fell-english text-xs sm:text-sm md:text-base">
+                            Last Seen Announcement
                         </th>
                         <!-- Action -->
                         <th class="py-3 px-3 text-biru-tua font-im-fell-english text-sm sm:text-base md:text-lg">
@@ -689,8 +716,12 @@ function manageCaAs() {
                                 class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
                                 x-text="caas.state"
                             ></td>
-                                                        <!-- Last activity -->
-                                                        <td 
+                            <td 
+                                class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
+                                x-text="caas.gender"
+                            ></td>
+                            <!-- Last activity -->
+                            <td 
                                 class="py-3 px-3 border-r border-black text-biru-tua font-im-fell-english text-sm sm:text-base"
                                 x-text="(() => {
                                     let date = new Date(caas.lastActivity * 1000);
@@ -1049,6 +1080,46 @@ function manageCaAs() {
                         ></span>
                     </p>
                     <p><strong>State:</strong> <span x-text="selectedCaas.state"></span></p>
+                    <p><strong>Gender:</strong> <span x-text="selectedCaas.gender"></span></p>
+                    <p><strong>Last Activity:</strong> <span
+                        x-text="(() => {
+                            let date = new Date(selectedCaas.lastActivity * 1000);
+                            let hours = date.getHours().toString().padStart(2, '0'); // Ensure 2-digit hours
+                            let minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure 2-digit minutes
+                            let day = date.getDate().toString().padStart(2, '0'); // 2-digit day
+                            let month = date.toLocaleString('en-US', { month: 'short' }); // Short month name
+                            let year = date.getFullYear();
+                            return `${hours}:${minutes}, ${day}/${month}/${year}`;
+                                })()"
+                    ></span></p>
+                    <p><strong>Last Announcement:</strong> <span
+                        x-text="(() => {
+                            if (!selectedCaas.lastSeenAnnouncement) {
+                                return 'Never seen';
+                            }
+                            let now = Math.floor(Date.now() / 1000); // Current time in UNIX timestamp
+                            let past = selectedCaas.lastSeenAnnouncement; // UNIX timestamp from your data
+                            let diff = now - past; // Difference in seconds
+
+                            // Time intervals in seconds
+                            let units = [
+                                { label: 'week', value: 604800 },
+                                { label: 'day', value: 86400 },
+                                { label: 'hour', value: 3600 },
+                                { label: 'minute', value: 60 }
+                            ];
+
+                            // Find the most significant time unit
+                            for (let unit of units) {
+                                let count = Math.floor(diff / unit.value);
+                                if (count >= 1) {
+                                    return `${count} ${unit.label}${count > 1 ? 's' : ''} ago`;
+                                }
+                            }
+
+                            return 'Just now'; // Default case
+                                })()"
+                    ></span></p>
                 </div>
             </template>
         </div>
@@ -1077,7 +1148,7 @@ function manageCaAs() {
             <hr class="border-white/50 mb-6" />
 
             <template x-if="selectedCaas">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <!-- NIM (readonly) -->
                     <div>
                         <label class="block text-xl mb-1">NIM</label>
@@ -1124,15 +1195,26 @@ function manageCaAs() {
                             x-model="selectedCaas.className"
                         >
                     </div>
-                    <!-- Gems -->
+                    <!-- Gender -->
                     <div>
-                        <label class="block text-xl mb-1">Gems</label>
+                        <label class="block text-xl mb-1">Gender</label>
                         <input 
                             type="text" 
                             class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
-                            x-model="selectedCaas.gems"
-                            placeholder="Kosongkan jika belum di tahap Upgrading"
+                            x-model="selectedCaas.gender"
                         >
+                    </div>
+                    <!-- Gems -->
+                    <div>
+                        <label class="block text-xl mb-1">Gems</label>
+                        <select
+                            class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
+                            x-model="selectedCaas.gems"
+                        >
+                        <template x-for="gem in gems" :key="gem">
+                            <option :value="gem" x-text="gem"></option>
+                        </template>
+                        </select>
                     </div>
                     <!-- Status -->
                     <div>

@@ -26,7 +26,7 @@
     camera.lookAt(0, 0, 0);
 
     // Background setup
-    const backgroundTexture = new THREE.TextureLoader().load('/assets/Background-1-Admin.webp');
+    const backgroundTexture = new THREE.TextureLoader().load('/assets/Background 1.webp');
     const backgroundGeometry = new THREE.PlaneGeometry(frustumWidth, frustumHeight);
     const backgroundMaterial = new THREE.MeshStandardMaterial({
         map: backgroundTexture,

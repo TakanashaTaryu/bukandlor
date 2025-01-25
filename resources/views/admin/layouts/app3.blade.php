@@ -14,11 +14,8 @@
 </head>
 <body
     x-data="{ open: false, isProfileOpen: false }"
-    class="relative min-h-screen"
+    class="relative min-h-screen bg-cover bg-center bg-no-repeat bg-LoginAdmin"
 >
-<canvas id="webgl-canvas" class="absolute w-screen h-screen top-0 -z-10"></canvas>
-
-
     {{-- HEADER (fixed) --}}
     <x-admin-nav/>
 
@@ -40,7 +37,6 @@
     </p>
 </footer>
 </div>
-    <x-admin-background/>
     @stack('scripts')
 </body>
 </html>

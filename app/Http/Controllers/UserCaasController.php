@@ -54,10 +54,11 @@ class UserCaasController extends Controller
                 'name' => $caas->user->profile->name ?? '',
                 'email' => $caas->user->profile->email ?? '',
                 'major' => $caas->user->profile->major ?? '',
+                'gender' => $caas->user->profile->gender ?? 'Unknown',
                 'className' => $caas->user->profile->class ?? '',
                 'gems' => $caas->role->name ?? 'No Gem',
-                'state' => $caas->user->caasStage->stage->name ?? 'unknown',
-                'status' => $caas->user->caasStage->status ?? 'unknown',
+                'state' => $caas->user->caasStage->stage->name ?? 'Unknown',
+                'status' => $caas->user->caasStage->status ?? 'Unknown',
                 'lastActivity' => $caas->user->last_activity,
                 'lastSeenAnnouncement' => $caas->user->last_seen_announcement,
             ];
@@ -78,6 +79,7 @@ class UserCaasController extends Controller
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|string|max:255',
             'major' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:10',
             'className' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
         ]);
@@ -97,6 +99,7 @@ class UserCaasController extends Controller
             'email' => $validated['email'],
             'major' => $validated['major'],
             'class' => $validated['className'],
+            'gender' => $validated['gender'],
         ]);
 
         Caas::create([
@@ -108,10 +111,10 @@ class UserCaasController extends Controller
         $stageName = $validated['state'] ?? 'Administration';
         $stage = Stage::firstOrCreate(['name' => $stageName]);
 
-        // Default status => "unknown"
+        // Default status => "Unknown"
         $user->caasStage()->create([
             'stage_id' => $stage->id,
-            'status'   => 'unknown',
+            'status'   => 'Unknown',
         ]);
 
         return response()->json(['success' => 'Successfully created new CaAs'], 201);
@@ -146,7 +149,8 @@ class UserCaasController extends Controller
             'email' => 'nullable|string|max:255',
             'major' => 'nullable|string|max:255',
             'className' => 'nullable|string|max:255',
-            'gems' => 'nullable|string|max:255',  // "No Gems" atau nama gem
+            'gems' => 'nullable|string|max:255',  // "No Gem" atau nama gem
+            'gender' => 'nullable|string|max:10',
             'status' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
         ]);
@@ -164,11 +168,12 @@ class UserCaasController extends Controller
                 'major' => $validated['major'],
                 'class' => $validated['className'],
                 'email' => $validated['email'],
+                'gender' => $validated['gender'],
             ]
         );
 
         // Jika admin memasukkan "No Gems", maka role_id = null
-        if (isset($validated['gems']) && strtolower($validated['gems']) === 'no gems') {
+        if (isset($validated['gems']) && strtolower($validated['gems']) === 'no gem') {
             $caas->role_id = null;
             $caas->save();
         } 

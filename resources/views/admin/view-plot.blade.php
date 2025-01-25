@@ -197,7 +197,7 @@
                                 class="py-3 px-3 border-r border-black text-biru-tua
                                        font-im-fell-english text-sm sm:text-base text-center"
                             >
-                                {{ $shift->kuota }}
+                                {{ $shift->kuota - $shift->plottingans_count}}
                             </td>
                             <!-- Taken (jumlah CAAS yang milih shift ini) -->
                             <td 

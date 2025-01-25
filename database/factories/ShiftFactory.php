@@ -12,11 +12,11 @@ class ShiftFactory extends Factory
     public function definition(): array
     {
         return [
-            'shift_no' => $this->faker->numberBetween(1, 10),
-            'date' => $this->faker->date(),
-            'time_start' => $this->faker->time(),
-            'time_end' => $this->faker->time(),
-            'kuota' => $this->faker->numberBetween(1, 50),
+            'shift_no' => fake()->numberBetween(1, 10),
+            'date' => fake()->date(),
+            'time_start' => fake()->time(),
+            'time_end' => fake()->time(),
+            'kuota' => fake()->numberBetween(1, 50),
         ];
     }
 }
