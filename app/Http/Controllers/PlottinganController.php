@@ -168,7 +168,11 @@ class PlottinganController extends Controller
     {
         // Lihat SHIFT + siapa saja yang pick SHIFT ini
         // plottingans.caas => agar data CAAS juga ke-load
-        $shift = Shift::with('plottingans.caas')->findOrFail($id);
+        $shift = Shift::with([
+            'plottingans.caas.user.profile',  // Loads user profile data
+            'plottingans.caas.user.caasStage.stage', // Loads caasStage and stage details
+            'plottingans.caas.role' // Loads the role (gems)
+        ])->findOrFail($id);
         // Di atas: 
         //   - "caas.user.profile" => kalau CAAS punya user_id => user => profile
         //     Sesuaikan relasi di model CAAS.

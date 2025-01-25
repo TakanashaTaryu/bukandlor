@@ -97,42 +97,42 @@
                         </td>
                         <!-- NIM -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->nim ?? '-' }}
+                            {{ $caas->user->nim ?? '-' }}
                         </td>
                         <!-- Name -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->name ?? 'Unknown CAAS Name' }}
+                            {{ $caas->user->profile->name ?? 'Unknown CAAS Name' }}
                         </td>
                         <!-- Email -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->email ?? '-' }}
+                            {{ $caas->user->profile->email ?? '-' }}
                         </td>
                         <!-- Major -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->major ?? '-' }}
+                            {{ $caas->user->profile->major ?? '-' }}
                         </td>
                         <!-- Class -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->className ?? '-' }}
+                            {{ $caas->user->profile->class ?? 'N/A' }}
                         </td>
                         <!-- Gems -->
                         <td class="py-3 px-3 border-r border-black text-biru-tua text-center">
-                            {{ $caas->gems ?? '-' }}
+                            {{ $caas->role->name ?? 'No Gem' }}
                         </td>
                         <!-- Status -->
                         <td 
-                            class="py-3 px-3 border-r border-black text-center font-im-fell-english"
+                            class="py-3 px-3 border-r border-black text-center font-im-fell-english text-biru-tua"
                             @class([
-                                'text-green-600 font-semibold' => isset($caas->status) && strtolower($caas->status) === 'pass',
-                                'text-red-600 font-semibold' => isset($caas->status) && strtolower($caas->status) === 'fail',
-                                'text-biru-tua' => !in_array(strtolower($caas->status ?? ''), ['pass', 'fail'])
+                                'text-green-600 font-semibold' => isset($caas->user->caasStage->status) && strtolower($caas->user->caasStage->status) === 'pass',
+                                'text-red-600 font-semibold' => isset($caas->user->caasStage->status) && strtolower($caas->user->caasStage->status) === 'fail',
+                                'text-biru-tua' => !in_array(strtolower($caas->user->caasStage->status ?? ''), ['pass', 'fail'])
                             ])
                         >
-                            {{ $caas->status ?? 'Unknown' }}
+                            {{ $caas->user->caasStage->status ?? 'Unknown' }}
                         </td>
                         <!-- State -->
                         <td class="py-3 px-3 text-biru-tua text-center">
-                            {{ $caas->state ?? '-' }}
+                            {{ $caas->user->caasStage->stage->name ?? '-' }}
                         </td>
                     </tr>
                 @empty
