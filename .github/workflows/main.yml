@@ -1,45 +1,44 @@
-name: Deploy to FTP Server
+name: Deploy Laravel 11 to FTP Server
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger deploy saat ada perubahan pada branch 'main'
 
 jobs:
   deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
+    name: Deploy to FTP Server
+    runs-on: ubuntu-latest  # Menjalankan pekerjaan di runner Ubuntu
 
     steps:
-      # Checkout kode repository
+      # Langkah 1: Checkout kode dari repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup PHP
+      # Langkah 2: Setup PHP environment (untuk menjalankan Laravel)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3.11' # Sesuaikan dengan versi PHP Anda
+          php-version: '8.3.11'  # Sesuaikan versi PHP Anda
           extensions: mbstring, bcmath
           ini-values: post_max_size=256M, upload_max_filesize=256M
           tools: composer
 
-      # Install dependensi Laravel
+      # Langkah 3: Install dependensi Laravel
       - name: Install Dependencies
         run: |
-          npm install
           composer install --no-dev --prefer-dist --optimize-autoloader
+          npm install
 
-      # Build Assets
+      # Langkah 4: Build assets frontend (jika menggunakan build tools seperti Vite atau lainnya)
       - name: Build Assets
-        run: npm run build
+        run: npm run build  # Pastikan frontend siap untuk di-upload
 
-      # Deploy folder `public` ke root di server
+      # Langkah 5: Deploy seluruh aplikasi ke server FTP
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: public/
-          server-dir: /
+          server: ${{ secrets.FTP_SERVER }}  # Server FTP Anda (gunakan Secrets)
+          username: ${{ secrets.FTP_USERNAME }}  # Username FTP Anda (gunakan Secrets)
+          password: ${{ secrets.FTP_PASSWORD }}  # Password FTP Anda (gunakan Secrets)
+          local-dir: ./  # Seluruh direktori proyek akan di-upload
