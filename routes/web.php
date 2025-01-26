@@ -62,11 +62,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // View Plot
     Route::get('/view-plot', [PlottinganController::class, 'viewPlot'])->name('view-plot');
     Route::get('/view-plot/{id}', [PlottinganController::class, 'show'])->name('view-plot.show');
-    Route::get('/export-pdf', [PlottinganController::class, 'exportPdf'])->name('plot.export.pdf');
-    Route::get('/export-excel', [PlottinganController::class, 'exportExcel'])->name('plot.export.excel');
 
-    // User caas import excel
-    Route::post('/caas/import', [UserCaasController::class, 'import'])->name('caas.import');
+    Route::post('/shift/import', [ShiftController::class, 'importShift'])->name('shift.import');
+    Route::get('/shift/export-pdf', [ShiftController::class, 'exportPdf'])->name('shift.export.pdf');
+    Route::get('/shift/export-excel', [ShiftController::class, 'exportExcel'])->name('shift.export.excel');
+    Route::get('/plot/export-pdf', [PlottinganController::class, 'exportPdf'])->name('plot.export.pdf');
+
+    // User caas import/export excel
+    Route::post('/caas/import', [UserCaasController::class, 'importCaas'])->name('caas.import');
+    Route::get('/caas/export', [UserCaasController::class, 'exportCaas'])->name('caas.export');
 
     // RESET PASSWORD ADMIN
     Route::get('/reset-password', [AdminProfileController::class, 'showResetPasswordForm'])->name('reset-password');

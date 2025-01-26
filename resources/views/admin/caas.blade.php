@@ -487,12 +487,11 @@ function manageCaAs() {
             >
                 Import Excel
             </button>
-            <button
-                class="bg-ungu-muda rounded-[30px] py-3 sm:py-4 
-                       text-white text-lg sm:text-2xl md:text-3xl font-im-fell-english
-                       hover:opacity-90 hover:shadow-lg transition w-full"
-            >
-                Export Excel
+            <button onclick="window.location='{{ route('admin.caas.export') }}'"
+                    class="bg-ungu-muda rounded-[30px] py-3 sm:py-4 
+                        text-white text-lg sm:text-2xl md:text-3xl font-im-fell-english
+                        hover:opacity-90 hover:shadow-lg transition w-full">
+                Export to Excel
             </button>
         </div>
     </div>

@@ -182,14 +182,16 @@ class PlottinganController extends Controller
 
     public function exportPdf()
     {
-        $shifts = Shift::withCount('plottingans')->get();
+        $shiftsC = Shift::withCount('plottingans')->get();
+        $totalShifts = $shiftsC->count();
+        $takenShifts = $shiftsC->sum('plottingans_count');
+        $totalCaas    = Caas::count();
+        $havenTPicked = $totalCaas - $takenShifts;
 
-        $pdf = Pdf::loadView('admin.shifts-pdf', compact('shifts'));
-        return $pdf->download('shifts.pdf');
-    }
+        $shifts = Shift::with(['plottingans.caas.user.profile'])->get();
 
-    public function exportExcel()
-    {
-        return Excel::download(new ShiftsExport, 'shifts.xlsx');
+        $pdf = Pdf::loadView('admin.plots-pdf', compact('shifts', 'totalShifts', 'takenShifts', 'havenTPicked'));
+
+        return $pdf->download('shifts_report.pdf');
     }
 }

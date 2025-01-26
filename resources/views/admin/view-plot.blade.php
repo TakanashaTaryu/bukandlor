@@ -71,7 +71,7 @@
         <div 
             class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3"
         >
-            <!-- Opsi Export (Copy, Excel, PDF, Column Visibility) -->
+            <!-- Opsi-opsi -->
             <div class="flex flex-wrap items-center gap-2">
                 <!-- SEARCH -->
                 <div class="flex items-center space-x-2">
@@ -90,35 +90,15 @@
                         placeholder="Search shift..."
                     >
                 </div>
-                <!-- Contoh tombol2 dummy / real -->
-                <button 
-                    class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                    title="Salin ke Clipboard (dummy)"
-                >
-                    Copy
-                </button>
-                <a 
-                    href="{{ route('admin.plot.export.excel') }}" 
-                    class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                >
-                    Excel
+                <a href="{{ route('admin.shift.export.excel') }}" class="bg-biru-tua text-white px-4 py-1 rounded-[30px] hover:opacity-90 transition text-sm">
+                    Shift Excel
                 </a>
-                <a 
-                    href="{{ route('admin.plot.export.pdf') }}"
-                    class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                >
-                    PDF
+                <a href="{{ route('admin.shift.export.pdf') }}" class="bg-biru-tua text-white px-4 py-1 rounded-[30px] hover:opacity-90 transition text-sm">
+                    Shift PDF
                 </a>
-                <button 
-                    class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                           hover:opacity-90 transition text-sm"
-                    title="Atur Kolom Tabel (dummy)"
-                >
-                    Column Visibility
-                </button>
+                <a href="{{ route('admin.plot.export.pdf') }}" class="bg-biru-tua text-white px-4 py-1 rounded-[30px] hover:opacity-90 transition text-sm">
+                    Plot PDF
+                </a>
             </div>
 
             <!-- Bagian Sorting -->
@@ -231,7 +211,7 @@
                                 class="py-3 px-3 border-r border-black text-biru-tua
                                        font-im-fell-english text-sm sm:text-base text-center"
                             >
-                                {{ $shift->time_start }} - {{ $shift->time_end }}
+                                {{ substr($shift->time_start, 0, 5) }} - {{ substr($shift->time_end, 0, 5) }}
                             </td>
                             <!-- Remaining Quota -->
                             <td 

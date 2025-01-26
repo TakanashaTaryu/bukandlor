@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CaasExport;
 use App\Imports\CaasImport;
 use App\Models\Caas;
 use App\Models\Role;
@@ -31,16 +32,10 @@ class UserCaasController extends Controller
                     continue;
                 }
 
-                // Assign a role to the user
-                $role = Role::firstOrCreate(
-                    ['name' => 'Default Role'], // Example role name
-                    ['description' => 'Default role for new CAAS users.']
-                );
-
                 // Create the Caas record
                 Caas::create([
                     'user_id' => $user->id,
-                    'role_id' => $role->id,
+                    'role_id' => null,
                 ]);
             }
         }
@@ -210,15 +205,20 @@ class UserCaasController extends Controller
         return response()->json(['success' => 'Deleted'], 200);
     }
 
-    public function import(Request $request)
+    public function importCaas(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,csv,xls'
         ]);
 
-        Excel::import(new Caasimport, $request->file('file'));
+        Excel::import(new CaasImport, $request->file('file'));
 
         return response()->json(['success' => 'Successfully imported data'], 200);
+    }
+
+    public function exportCaas()
+    {
+        return Excel::download(new CaasExport, 'caas_list.xlsx');
     }
 
     public function chooseGemView()

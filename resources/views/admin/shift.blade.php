@@ -5,6 +5,29 @@
 {{-- Jika pakai Alpine.js, pastikan sudah ada import Alpine, misal di layout --}}
 @push('scripts')
 <script>
+async function importShift(file) {
+    try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData._method = "patch";
+        const response = await fetch("/admin/shift/import", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to import shifts');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+
     function manageShift() {
         return {
             shiftList: {!! $shifts->map(function($shift){
@@ -30,6 +53,7 @@
             isViewOpen: false,
             isEditOpen: false,
             isDeleteOpen: false,
+            isImportOpen: false,
 
             // Data form "Add Shift"
             addShiftNo: '',
@@ -41,6 +65,14 @@
             // Data terpilih (untuk View/Edit/Delete)
             selectedShift: null,
 
+            // ----------------------
+            // Import file
+            // ----------------------
+            chosenFile: null,
+            isLoading: false,
+            timer: null,
+            elapsedTime: 0,
+
             // -------------
             // Computed / Getter
             // -------------
@@ -51,7 +83,9 @@
                     item.date.toLowerCase().includes(term) ||
                     item.shiftNo.toLowerCase().includes(term) ||
                     item.timeStart.toLowerCase().includes(term) ||
-                    item.timeEnd.toLowerCase().includes(term)
+                    item.timeEnd.toLowerCase().includes(term) ||
+                    new Date(item.date).toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toLowerCase().includes(term) ||
+                    new Date(item.date).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }).toLowerCase().includes(term)
                 );
             },
             get totalPages() {
@@ -105,6 +139,44 @@
             confirmDelete(shift) {
                 this.selectedShift = JSON.parse(JSON.stringify(shift));
                 this.isDeleteOpen = true;
+            },
+            // Modal "Import Excel"
+            async saveImport() {
+                console.log("Selected file:", this.chosenFile);
+
+                if (!this.chosenFile) {
+                    alert("No file selected!");
+                    return;
+                }
+
+                // Show loading indicator
+                this.isLoading = true;
+                this.elapsedTime = 0;
+
+                // Start a timer to track elapsed time
+                this.timer = setInterval(() => {
+                    this.elapsedTime++;
+                }, 1000); // Increment every 1 second
+
+                try {
+                    // Call importCaas and wait for it to complete
+                    await importShift(this.chosenFile);
+
+                    // Reload after the import completes
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Import failed:", error);
+                    alert("Import failed. Please try again.");
+                } finally {
+                    // Stop the timer and hide loading indicator
+                    clearInterval(this.timer);
+                    this.isLoading = false;
+                    this.isImportOpen = false;
+                    this.resetImport();
+                }
+            },
+            resetImport() {
+                this.chosenFile = null;
             },
         }
     }
@@ -180,7 +252,6 @@
             >
                 Add Shift
             </button>
-
             <!-- Import Excel -->
             <button
                 x-cloak
@@ -188,7 +259,7 @@
                        rounded-[30px] py-4 sm:py-6 md:py-6
                        text-lg sm:text-2xl md:text-3xl text-center
                        hover:opacity-90 hover:shadow-lg transition"
-                @click="isAddOpen = true"
+                @click="isImportOpen = true"
             >
                 Import Excel
             </button>
@@ -309,28 +380,27 @@
                     <template x-for="(shift, i) in paginatedData" :key="shift.id">
                         <tr class="border-b border-black last:border-b-0">
                             <!-- No -->
-                            <td class="py-3 px-3 border-r border-black text-biru-tua
+                            <td class="py-3 px-3 border-r border-black text-biru-tua text-center
                                        font-im-fell-english text-sm sm:text-base">
                                 <span x-text="(currentPage - 1) * showEntries + i + 1"></span>.
                             </td>
                             <!-- Date -->
-                            <td class="py-3 px-3 border-r border-black text-biru-tua
+                            <td class="py-3 px-3 border-r border-black text-biru-tua text-center
                                        font-im-fell-english text-sm sm:text-base"
-                                x-text="shift.date"
+                                x-text="new Date(shift.date).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })">
                             ></td>
                             <!-- Shift No -->
-                            <td class="py-3 px-3 border-r border-black text-biru-tua
+                            <td class="py-3 px-3 border-r border-black text-biru-tua text-center
                                        font-im-fell-english text-sm sm:text-base"
                                 x-text="shift.shiftNo"
                             ></td>
                             <!-- Time -->
-                            <td class="py-3 px-3 border-r border-black text-biru-tua
+                            <td class="py-3 px-3 border-r border-black text-biru-tua text-center
                                        font-im-fell-english text-sm sm:text-base">
-                                <span x-text="shift.timeStart"></span> - 
-                                <span x-text="shift.timeEnd"></span>
+                                <span x-text="shift.timeStart.slice(0, 5) + '-' + shift.timeEnd.slice(0, 5)"></span>
                             </td>
                             <!-- Quota -->
-                            <td class="py-3 px-3 border-r border-black text-biru-tua
+                            <td class="py-3 px-3 border-r border-black text-biru-tua text-center
                                        font-im-fell-english text-sm sm:text-base"
                                 x-text="shift.kuota"
                             ></td>
@@ -711,6 +781,64 @@
                     </div>
                 </form>
             </template>
+        </div>
+    </div>
+
+    <!-- -----------------------------
+         MODAL: Import Excel
+         ----------------------------- -->
+         <div x-cloak
+        class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+        x-show="isImportOpen"
+        x-transition
+    >
+        <div class="bg-biru-tua text-white rounded-2xl p-6 sm:p-8 w-[90%] max-w-lg relative">
+            <button 
+                class="absolute top-3 right-3 text-2xl font-bold"
+                @click="isImportOpen = false; resetImport();"
+            >
+                &times;
+            </button>
+
+            <h2 class="text-3xl sm:text-4xl font-im-fell-english mb-4">
+                Import Excel
+            </h2>
+            <hr class="border-white/50 mb-6" />
+
+            <p class="text-xl sm:text-2xl mb-2">
+                Format file:
+            </p>
+            <div class="bg-custom-gray rounded-2xl p-4 sm:p-6 mb-4 text-biru-tua">
+            <p>ID, Shift_No, Date, Time_Start, Time_End, Quota</p>
+            </div>
+
+            <!-- Pilih File -->
+            <p class="text-xl sm:text-2xl mb-2">Choose File</p>
+            <label class="inline-block mb-4">
+                <div 
+                    class="bg-biru-tua border border-white py-2 px-4 
+                            rounded-2xl cursor-pointer hover:opacity-90 inline-block"
+                >
+                    <span x-text="chosenFile ? chosenFile.name : 'No File Chosen'"></span>
+                </div>
+                <input 
+                    type="file" 
+                    class="hidden"
+                    accept=".xlsx,.xls,.csv"
+                    @change="chosenFile = $event.target.files[0]"
+                >
+            </label>
+
+            <button 
+                class="bg-abu-abu-keunguan text-biru-tua px-6 py-3 rounded-2xl hover:opacity-90 transition"
+                @click="saveImport" :disabled="isLoading"
+            >
+                Import
+            </button>
+            <!-- Loading Indicator -->
+            <div x-show="isLoading" class="loading">
+                Importing... Time elapsed: <span x-text="elapsedTime"></span> seconds
+            </div>
         </div>
     </div>
 

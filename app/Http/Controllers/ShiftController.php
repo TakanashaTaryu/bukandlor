@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ShiftsExport;
 use App\Http\Controllers\Controller;
+use App\Imports\ShiftImport;
 use Illuminate\Http\Request;
 use App\Models\Shift;
 use App\Models\Plottingan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ShiftController extends Controller
 {
@@ -116,5 +120,34 @@ class ShiftController extends Controller
     {
         Plottingan::truncate();
         return redirect()->back()->with('success', 'All Plots have been reset!');
+    }
+
+    public function exportPdf()
+    {
+        $shifts = Shift::withCount('plottingans')->get();
+
+        $pdf = Pdf::loadView('admin.shifts-pdf', compact('shifts'));
+        return $pdf->download('shifts.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new ShiftsExport, 'shifts.xlsx');
+    }
+
+    public function importShift(Request $request)
+    {
+        // Validate file input
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv,xls|max:2048',
+        ]);
+
+        try {
+            Excel::import(new ShiftImport, $request->file('file'));
+
+            return back()->with('success', 'Shifts imported successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error importing shifts: ' . $e->getMessage());
+        }
     }
 }

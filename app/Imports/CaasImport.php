@@ -63,7 +63,7 @@ class CaasImport implements ToModel, WithHeadingRow
                 ['role_id' => $role->id]
             );
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 409);
+            return null;
         }
     }
 }

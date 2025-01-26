@@ -6,7 +6,7 @@ import random
 fake = Faker()
 
 # Define possible values for 'Gems', 'Status', and 'State'
-gems_options = ['Ruby', 'Sapphire', 'Emerald', 'Diamond']
+gems_options = ['No Gem'] # 'Fire Opal', 'Radiant Quartz', 'Crystal Of The Prism', 'Moonstone', 'Opal Gem']
 status_options = ['Pass', 'Fail', 'Unknown']
 state_options = [
                     'Administration',
