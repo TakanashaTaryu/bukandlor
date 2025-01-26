@@ -1,7 +1,7 @@
 <!-- resources/views/admin/view-plot.blade.php -->
 @extends('admin.layouts.app')
 
-@section('title', 'Manage Shift - Crystal Cavern')
+@section('title', 'View Plot - Crystal Cavern')
 
 @section('content')
 <div 
@@ -66,11 +66,31 @@
     </div>
 
     <!-- TABEL PLOT SHIFT -->
-    <div class="bg-custom-gray rounded-[30px] p-6 sm:p-8 shadow-lg">
+    <div class="bg-custom-gray rounded-[30px] p-6 sm:p-8 shadow-lg" id="plotTableContainer">
         <!-- Search & Export Buttons -->
-        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3">
+        <div 
+            class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-3"
+        >
             <!-- Opsi Export (Copy, Excel, PDF, Column Visibility) -->
             <div class="flex flex-wrap items-center gap-2">
+                <!-- SEARCH -->
+                <div class="flex items-center space-x-2">
+                    <label 
+                        for="searchInput" 
+                        class="text-biru-tua text-base sm:text-lg md:text-xl font-im-fell-english"
+                    >
+                        Search
+                    </label>
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        class="bg-white border border-biru-tua rounded-[30px] px-3 py-1 
+                               focus:outline-none focus:ring-1 focus:ring-biru-tua
+                               text-sm sm:text-base"
+                        placeholder="Search shift..."
+                    >
+                </div>
+                <!-- Contoh tombol2 dummy / real -->
                 <button 
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
                            hover:opacity-90 transition text-sm"
@@ -78,17 +98,20 @@
                 >
                     Copy
                 </button>
-                <a href="{{ route('admin.plot.export.excel') }}" 
+                <a 
+                    href="{{ route('admin.plot.export.excel') }}" 
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                        hover:opacity-90 transition text-sm">
+                           hover:opacity-90 transition text-sm"
+                >
                     Excel
                 </a>
-                <a href="{{ route('admin.plot.export.pdf') }}"
+                <a 
+                    href="{{ route('admin.plot.export.pdf') }}"
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
-                        hover:opacity-90 transition text-sm">
+                           hover:opacity-90 transition text-sm"
+                >
                     PDF
                 </a>
-
                 <button 
                     class="bg-biru-tua text-white px-4 py-1 rounded-[30px] 
                            hover:opacity-90 transition text-sm"
@@ -97,18 +120,36 @@
                     Column Visibility
                 </button>
             </div>
-            <!-- Bagian Search (manual / JS) -->
-            <div class="flex items-center space-x-2">
-                <label class="text-biru-tua text-base sm:text-lg md:text-xl font-im-fell-english">
-                    Search
-                </label>
-                <input 
-                    type="text" 
-                    class="bg-white border border-biru-tua rounded-[30px] px-3 py-1 
-                           focus:outline-none focus:ring-1 focus:ring-biru-tua
-                           text-sm sm:text-base"
-                    placeholder="Search shift..."
-                >
+
+            <!-- Bagian Sorting -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                <!-- SORT: Pilih kolom + asc/desc -->
+                <div class="flex items-center space-x-2">
+                    <label 
+                        for="sortColumn"
+                        class="text-biru-tua text-base sm:text-lg md:text-xl font-im-fell-english"
+                    >
+                        Sort By
+                    </label>
+                    <select 
+                        id="sortColumn"
+                        class="bg-white border border-biru-tua rounded-[30px] px-3 py-1 text-sm sm:text-base"
+                    >
+                        <option value="">No Sorting</option>
+                        <option value="shiftNo">Shift No</option>
+                        <option value="date">Date</option>
+                        <option value="time">Time</option>
+                        <option value="remainingQuota">Remaining Quota</option>
+                        <option value="taken">Taken</option>
+                    </select>
+                    <select 
+                        id="sortOrder"
+                        class="bg-white border border-biru-tua rounded-[30px] px-3 py-1 text-sm sm:text-base"
+                    >
+                        <option value="asc" selected>Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -145,7 +186,7 @@
                             class="py-3 px-3 border-r border-black text-biru-tua
                                    font-im-fell-english text-sm sm:text-base md:text-lg text-center"
                         >
-                            Quota
+                            Remaining Quota
                         </th>
                         <th 
                             class="py-3 px-3 border-r border-black text-biru-tua
@@ -161,7 +202,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody class="bg-white">
+                <tbody class="bg-white" id="plotTableBody">
                     @foreach($shifts as $index => $shift)
                         <tr class="border-b border-black last:border-b-0">
                             <!-- No. -->
@@ -192,14 +233,14 @@
                             >
                                 {{ $shift->time_start }} - {{ $shift->time_end }}
                             </td>
-                            <!-- Quota -->
+                            <!-- Remaining Quota -->
                             <td 
                                 class="py-3 px-3 border-r border-black text-biru-tua
                                        font-im-fell-english text-sm sm:text-base text-center"
                             >
-                                {{ $shift->kuota - $shift->plottingans_count}}
+                                {{ $shift->kuota - $shift->plottingans_count }}
                             </td>
-                            <!-- Taken (jumlah CAAS yang milih shift ini) -->
+                            <!-- Taken (jumlah CAAS) -->
                             <td 
                                 class="py-3 px-3 border-r border-black text-biru-tua
                                        font-im-fell-english text-sm sm:text-base text-center"
@@ -226,4 +267,93 @@
         </div>
     </div>
 </div>
+
+<!-- Script Search & Sort (Client Side) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.querySelector('#plotTableBody');
+    // Ambil semua baris tr di dalam tbody
+    let rows = Array.from(tableBody.querySelectorAll('tr')).map((tr) => {
+        const td = tr.querySelectorAll('td');
+        return {
+            element: tr,
+            // Kolom: 
+            // td[1] => Shift No
+            // td[2] => Date
+            // td[3] => Time
+            // td[4] => Remaining Quota
+            // td[5] => Taken
+            // Catatan: td[0] adalah "No."
+            shiftNo: td[1].innerText.trim().toLowerCase(),
+            date: td[2].innerText.trim().toLowerCase(),
+            time: td[3].innerText.trim().toLowerCase(),
+            remainingQuota: td[4].innerText.trim().toLowerCase(),
+            taken: td[5].innerText.trim().toLowerCase(),
+        };
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const sortColumnSelect = document.getElementById('sortColumn');
+    const sortOrderSelect = document.getElementById('sortOrder');
+
+    function renderTable() {
+        // 1) Ambil search term
+        const searchTerm = searchInput.value.toLowerCase();
+
+        // 2) Filter
+        let filtered = rows.filter(r => {
+            // Cek ke-lima field
+            return (
+                r.shiftNo.includes(searchTerm) ||
+                r.date.includes(searchTerm) ||
+                r.time.includes(searchTerm) ||
+                r.remainingQuota.includes(searchTerm) ||
+                r.taken.includes(searchTerm)
+            );
+        });
+
+        // 3) Sort
+        const sortColumn = sortColumnSelect.value;
+        const sortOrder = sortOrderSelect.value; // 'asc' atau 'desc'
+        if (sortColumn) {
+            filtered.sort((a, b) => {
+                let valA = a[sortColumn];
+                let valB = b[sortColumn];
+
+                // Kolom numeric
+                if (sortColumn === 'remainingQuota' || sortColumn === 'taken') {
+                    valA = parseInt(valA) || 0;
+                    valB = parseInt(valB) || 0;
+                }
+
+                // Kolom string
+                // 'asc' => a < b => -1
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // 4) Re-render ke table
+        tableBody.innerHTML = '';
+        filtered.forEach((r, index) => {
+            // Update nomor (td[0]) => index + 1
+            // Kita update isi cell "No."
+            // (karena td[0] adalah nomor)
+            let tds = r.element.querySelectorAll('td');
+            tds[0].innerText = (index + 1) + ".";
+
+            tableBody.appendChild(r.element);
+        });
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', renderTable);
+    sortColumnSelect.addEventListener('change', renderTable);
+    sortOrderSelect.addEventListener('change', renderTable);
+
+    // Render awal
+    renderTable();
+});
+</script>
 @endsection

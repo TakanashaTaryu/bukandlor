@@ -126,6 +126,7 @@ function manageCaAs() {
         addPassword: '',
         addMajor: '',
         addClass: '',
+        addGender: '',
         // (Opsional) Boleh sediakan stage default
         addState: '',
 
@@ -956,6 +957,19 @@ function manageCaAs() {
                         x-model="addClass"
                     >
                 </div>
+                <!-- Gender -->
+<div>
+    <label class="block text-xl mb-1">Gender</label>
+    <select 
+        class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
+        x-model="addGender"
+    >
+        <option value="">Select gender...</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+</div>
+
                 <!-- Optional Stage (jika admin mau set stage langsung) -->
                 <div class="sm:col-span-2">
                     <label class="block text-xl mb-1">Stage (Optional)</label>
@@ -1196,14 +1210,17 @@ function manageCaAs() {
                         >
                     </div>
                     <!-- Gender -->
-                    <div>
-                        <label class="block text-xl mb-1">Gender</label>
-                        <input 
-                            type="text" 
-                            class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
-                            x-model="selectedCaas.gender"
-                        >
-                    </div>
+<div>
+    <label class="block text-xl mb-1">Gender</label>
+    <select 
+        class="w-full bg-custom-gray rounded-2xl p-3 text-biru-tua"
+        x-model="selectedCaas.gender"
+    >
+    <option value="N/A">N/A</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+    </select>
+</div>
                     <!-- Gems -->
                     <div>
                         <label class="block text-xl mb-1">Gems</label>

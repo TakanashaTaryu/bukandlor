@@ -17,7 +17,7 @@
                             'date' => $shift->date,
                             'timeStart' => $shift->time_start,
                             'timeEnd' => $shift->time_end,
-                            'kuota' => $shift->kuota,
+                            'kuota' => $shift->kuota - $shift->plottingans_count,
                         ];
                     }) -> toJson() !!},
 
@@ -82,16 +82,8 @@
 </head>
 
 <body class="bg-Shift bg-cover bg-center bg-no-repeat max-w-full min-h-screen">
-    @if(session('error'))
-    <div class="bg-red-500 text-white p-3 mb-2 rounded">
-        {{ session('error') }}
-    </div>
-    @endif
-
-    @if(session('success'))
-    <div class="bg-green-500 text-white p-3 mb-2 rounded">
-        {{ session('success') }}
-    </div>
+    @if(session('error') || session('success'))
+        <x-notification />
     @endif
 
     <div class="bg-BlackLayer w-full h-full z-30 font-im-fell-english overflow-hidden">

@@ -1,4 +1,4 @@
-@extends('admin.layouts.app3')
+@extends('admin.layouts.app2')
 
 @section('title', 'Reset Password Admin')
 
@@ -9,25 +9,25 @@
     <!-- Reset Password Card -->
     <div 
       class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg 
-         rounded-[30px] p-10 mt-[-2rem] shadow-xl w-full max-w-xl mx-auto border border-white/20"
+             rounded-[30px] p-8 -mt-8 shadow-xl w-full max-w-xl mx-auto border border-white/20"
     >
         <!-- Heading -->
         <h1 
-          class="text-center text-putih font-im-fell-english mb-6
+          class="text-center text-putih font-im-fell-english mb-4
                  text-3xl sm:text-4xl md:text-5xl"
         >
             Modify Your Password
         </h1>
         <p 
-          class="text-center text-putih mb-4
+          class="text-center text-putih mb-3
                  text-base sm:text-lg md:text-xl"
         >
             Please enter your old password & new password (min 8 chars) below.
         </p>
 
-        <!-- Notifikasi sukses jika ada -->
+        <!-- Success Notification (if any) -->
         @if (session('status'))
-            <div class="mb-4 text-center text-green-400 font-semibold">
+            <div class="mb-3 text-center text-green-400 font-semibold">
                 {{ session('status') }}
             </div>
         @endif
@@ -40,7 +40,7 @@
             <div class="mt-2">
                 <label 
                   for="old_password" 
-                  class="block text-[24px] sm:text-[30px] md:text-[36px] text-putih mb-2"
+                  class="block text-[22px] sm:text-[28px] md:text-[34px] text-putih mb-1.5"
                 >
                     Old Password
                 </label>
@@ -49,7 +49,7 @@
                   id="old_password"
                   name="old_password"
                   placeholder="Enter your old password"
-                  class="block w-full h-[50px] sm:h-[55px] md:h-[60px] rounded-[30px] px-6 
+                  class="block w-full h-[48px] sm:h-[52px] md:h-[56px] rounded-[25px] px-6 
                          text-biru-tua focus:outline-none focus:ring-2 
                          focus:ring-biru-tua/50 shadow-sm placeholder-gray-400 
                          transition-all text-base sm:text-lg md:text-xl"
@@ -61,10 +61,10 @@
             </div>
 
             <!-- New Password -->
-            <div class="mt-6">
+            <div class="mt-4">
                 <label
                   for="password"
-                  class="block text-[24px] sm:text-[30px] md:text-[36px] text-putih mb-2"
+                  class="block text-[22px] sm:text-[28px] md:text-[34px] text-putih mb-1.5"
                 >
                     New Password
                 </label>
@@ -73,7 +73,7 @@
                   id="password"
                   name="password"
                   placeholder="Enter your new password"
-                  class="block w-full h-[50px] sm:h-[55px] md:h-[60px] rounded-[30px] px-6 
+                  class="block w-full h-[48px] sm:h-[52px] md:h-[56px] rounded-[25px] px-6 
                          text-biru-tua focus:outline-none focus:ring-2 
                          focus:ring-biru-tua/50 shadow-sm placeholder-gray-400 
                          transition-all text-base sm:text-lg md:text-xl"
@@ -85,10 +85,10 @@
             </div>
 
             <!-- Confirm New Password -->
-            <div class="mt-6">
+            <div class="mt-4">
                 <label
                   for="password_confirmation"
-                  class="block text-[24px] sm:text-[30px] md:text-[36px] text-putih mb-2"
+                  class="block text-[22px] sm:text-[28px] md:text-[34px] text-putih mb-1.5"
                 >
                     Confirm Password
                 </label>
@@ -97,7 +97,7 @@
                   id="password_confirmation"
                   name="password_confirmation"
                   placeholder="Re-type your new password"
-                  class="block w-full h-[50px] sm:h-[55px] md:h-[60px] rounded-[30px] px-6 
+                  class="block w-full h-[48px] sm:h-[52px] md:h-[56px] rounded-[25px] px-6 
                          text-biru-tua focus:outline-none focus:ring-2 
                          focus:ring-biru-tua/50 shadow-sm placeholder-gray-400 
                          transition-all text-base sm:text-lg md:text-xl"
@@ -106,16 +106,16 @@
             </div>
         
             <!-- Submit Button -->
-            <div class="flex justify-center mt-8">
+            <div class="flex justify-center mt-6">
                 <button 
                   type="submit"
-                  class="w-[180px] sm:w-[200px] md:w-[220px] h-[60px] sm:h-[65px] md:h-[70px] 
-                         bg-biru-tua rounded-[30px] flex items-center justify-center
+                  class="w-[160px] sm:w-[190px] md:w-[210px] h-[55px] sm:h-[60px] md:h-[65px] 
+                         bg-biru-tua rounded-[25px] flex items-center justify-center
                          transition duration-300 hover:bg-blue-700"
                 >
                     <span 
-                      class="text-white font-im-fell-english leading-[40px] sm:leading-[45px] md:leading-[51px]
-                             text-xl sm:text-2xl md:text-[40px]"
+                      class="text-white font-im-fell-english leading-[35px] sm:leading-[40px] md:leading-[46px]
+                             text-xl sm:text-2xl md:text-[36px]"
                     >
                         Save
                     </span>
@@ -125,9 +125,9 @@
     </div>
 
     <!-- Footer Text -->
-    <div class="mt-16 md:mt-2 lg:mt-4">
+    <div class="mt-12 md:mt-1 lg:mt-2 mb-12 md:mb-1 lg:mb-2">
         <p 
-          class="text-white text-center sm:mt-12
+          class="text-white text-center sm:mt-8
                  text-2xl sm:text-3xl md:text-2xl"
         >
             Discover your light within

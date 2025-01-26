@@ -21,7 +21,7 @@
     $headerColor = 'text-green-600';   // default warna hijau
 
     if (strtolower($status) === 'fail') {
-        $headerText = 'Sorry';
+        $headerText = "We are Sorry";
         $headerColor = 'text-red-600';
     }
 @endphp

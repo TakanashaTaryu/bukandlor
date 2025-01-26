@@ -297,7 +297,7 @@
                         </th>
                         <th class="py-3 px-3 border-r border-black text-biru-tua
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
-                            Quota
+                            Initial Quota
                         </th>
                         <th class="py-3 px-3 text-biru-tua
                                    font-im-fell-english text-sm sm:text-base md:text-lg">
@@ -477,7 +477,7 @@
                     </div>
                     <!-- Quota -->
                     <div>
-                        <label class="block text-xl mb-1 text-white">Quota</label>
+                        <label class="block text-xl mb-1 text-white">Initial Quota</label>
                         <input 
                             type="number"
                             name="kuota"
@@ -533,7 +533,7 @@
                     <p><strong>Date:</strong> <span x-text="selectedShift.date"></span></p>
                     <p><strong>Time Start:</strong> <span x-text="selectedShift.timeStart"></span></p>
                     <p><strong>Time End:</strong> <span x-text="selectedShift.timeEnd"></span></p>
-                    <p><strong>Quota:</strong> <span x-text="selectedShift.kuota"></span></p>
+                    <p><strong>Initial Quota:</strong> <span x-text="selectedShift.kuota"></span></p>
                 </div>
             </template>
         </div>
@@ -630,7 +630,7 @@
                         </div>
                         <!-- Quota -->
                         <div>
-                            <label class="block text-xl mb-1 text-white">Quota</label>
+                            <label class="block text-xl mb-1 text-white">Initial Quota</label>
                             <input 
                                 type="number"
                                 name="kuota"

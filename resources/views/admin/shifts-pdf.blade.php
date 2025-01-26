@@ -19,7 +19,7 @@
                 <th>Shift No.</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>Quota</th>
+                <th>Remaining Quota</th>
                 <th>Taken</th>
             </tr>
         </thead>

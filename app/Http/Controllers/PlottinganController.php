@@ -43,6 +43,7 @@ class PlottinganController extends Controller
         $shifts = Shift::orderBy('date', 'asc')
             ->orderBy('time_start', 'asc')
             ->get();
+        $shifts = Shift::withCount('plottingans')->get();
 
         // Return ke blade "CaAs.ChooseShift"
         return view('CaAs.ChooseShift', compact('shifts'));
@@ -81,7 +82,7 @@ class PlottinganController extends Controller
                 // 1) Cek kuota SHIFT
                 $alreadyPickedCount = Plottingan::where('shift_id', $shift->id)->count();
                 if ($alreadyPickedCount >= $shift->kuota) {
-                    throw new \Exception('Shift is full. Quota exceeded!');
+                    throw new \Exception('Shift is full. Quota exceeded! Please reload the page.');
                 }
 
                 // 2) Cek overlap SHIFT di hari yang sama
