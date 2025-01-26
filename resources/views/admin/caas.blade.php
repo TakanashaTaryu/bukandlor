@@ -1007,7 +1007,7 @@ function manageCaAs() {
                 Format file:
             </p>
             <div class="bg-custom-gray rounded-2xl p-4 sm:p-6 mb-4 text-biru-tua">
-            <p>NIM, Name, Email, Major, Class, Gems, Status, State</p>
+            <p>NIM, Name, Email, Major, Class, Gems, Status, State, Gender</p>
             </div>
 
             <!-- Pilih File -->

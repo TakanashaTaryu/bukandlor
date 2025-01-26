@@ -28,11 +28,12 @@ for _ in range(50):  # Generate 50 fake records
     gems = random.choice(gems_options)
     status = random.choice(status_options)
     state = random.choice(state_options)
+    gender = random.choice(['Male', 'Female'])
 
-    data.append([nim, name, email, major, class_name, gems, status, state])
+    data.append([nim, name, email, major, class_name, gems, status, state, gender])
 
 # Create DataFrame
-df = pd.DataFrame(data, columns=['NIM', 'Name', 'Email', 'Major', 'Class', 'Gems', 'Status', 'State'])
+df = pd.DataFrame(data, columns=['NIM', 'Name', 'Email', 'Major', 'Class', 'Gems', 'Status', 'State', 'Gender'])
 
 # Save to Excel
 file_name = "test_caas.xlsx"

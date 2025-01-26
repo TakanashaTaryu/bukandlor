@@ -216,7 +216,7 @@ class UserCaasController extends Controller
             'file' => 'required|mimes:xlsx,csv,xls'
         ]);
 
-        Excel::import(new CaasImport, $request->file('file'));
+        Excel::import(new Caasimport, $request->file('file'));
 
         return response()->json(['success' => 'Successfully imported data'], 200);
     }

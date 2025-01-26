@@ -139,7 +139,7 @@
                                 </td>
                                 <!-- Date -->
                                 <td class="py-3 px-3 border-[1px] border-black"
-                                    x-text="new Date(shift.date).toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })"></td>
+                                    x-text="new Date(shift.date).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })"></td>
                                 <!-- Shift No -->
                                 <td class="py-3 px-3 border-[1px] border-black" x-text="shift.shiftNo"></td>
                                 <!-- Time -->

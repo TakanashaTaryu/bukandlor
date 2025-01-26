@@ -120,14 +120,12 @@
                             {{ $caas->role->name ?? 'No Gem' }}
                         </td>
                         <!-- Status -->
-                        <td 
-                            class="py-3 px-3 border-r border-black text-center font-im-fell-english text-biru-tua"
-                            @class([
-                                'text-green-600 font-semibold' => isset($caas->user->caasStage->status) && strtolower($caas->user->caasStage->status) === 'pass',
-                                'text-red-600 font-semibold' => isset($caas->user->caasStage->status) && strtolower($caas->user->caasStage->status) === 'fail',
-                                'text-biru-tua' => !in_array(strtolower($caas->user->caasStage->status ?? ''), ['pass', 'fail'])
-                            ])
-                        >
+                        <td class="py-3 px-3 border-r border-black text-center 
+                            {{ strtolower($caas->user->caasStage->status ?? '') === 'pass' ? 'text-green-600 font-semibold' : '' }}
+                            {{ strtolower($caas->user->caasStage->status ?? '') === 'fail' ? 'text-red-600 font-semibold' : '' }}
+                            {{ !in_array(strtolower($caas->user->caasStage->status ?? ''), ['pass', 'fail']) ? 'text-biru-tua' : '' }}">
+                            {{ $caas->user->caasStage->status ?? 'Unknown' }}
+                        </td>
                             {{ $caas->user->caasStage->status ?? 'Unknown' }}
                         </td>
                         <!-- State -->

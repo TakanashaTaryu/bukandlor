@@ -35,7 +35,7 @@
         </div>
 
         {{-- Owl Carousel --}}
-        <div class="owl-carousel owl-theme justify-evenly mx-auto my-4">
+        <div class="owl-carousel owl-theme justify-evenly mx-auto my-4 -translate-x-6">
           @foreach($gems as $gem)
             <div class="relative h-[410px] w-[200px] xs:w-[400px] flex flex-col justify-center items-center mx-auto gem-container">
               <img
@@ -58,7 +58,7 @@
             class="owl-prev hover:scale-105 hover:brightness-110 active:scale-95 cursor-Wand"
             type="button"
           >
-            <img src="{{ asset('assets/Prev.webp') }}" alt="Prev" class="h-full">
+            <img src="{{ asset('assets/Prev.webp') }}" alt="Prev" class="h-[60px]">
           </button>
 
           <button
@@ -79,7 +79,7 @@
             class="owl-next hover:scale-105 hover:brightness-110 active:scale-95 cursor-Wand"
             type="button"
           >
-            <img src="{{ asset('assets/Next.webp') }}" alt="Next" class="h-full">
+            <img src="{{ asset('assets/Next.webp') }}" alt="Next" class="h-[60px]">
           </button>
         </div>
 
