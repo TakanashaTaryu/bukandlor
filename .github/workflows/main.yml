@@ -1,0 +1,42 @@
+name: Deploy to FTP Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout kode repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3.11' # Sesuaikan dengan versi PHP Anda
+          extensions: mbstring, bcmath
+          ini-values: post_max_size=256M, upload_max_filesize=256M
+          tools: composer
+
+      # Install dependensi Laravel
+      - name: Install Dependencies
+        run: |
+            npm install
+            composer install --no-dev --prefer-dist --optimize-autoloader
+
+      - name: Build Assets
+        run: npm run build
+
+      # Deploy file menggunakan FTP
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: public/build
