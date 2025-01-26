@@ -55,8 +55,8 @@ class AnnouncementController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'success_message' => 'required|string|max:255',
-            'fail_message' => 'required|string|max:255',
+            'success_message' => 'required|string',
+            'fail_message' => 'required|string',
             'link' => 'nullable|string|max:255',
             'stage_id' => 'required|int',
         ]);

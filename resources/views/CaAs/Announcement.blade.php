@@ -9,12 +9,21 @@
 @php
     $user = Auth::user();
     $announcement = App\Models\Announcement::find(1);
-    $announcement = App\Models\Announcement::find(1);
     $message = $announcement 
         ? ($user->caasStage->status === "Fail" ? $announcement->fail_message : $announcement->success_message)
         : "Unknown";
     $link = ($announcement && $user->caasStage->status !== "Fail") ? $announcement->link : "";
     $name = $user->profile->name ?? $user->nim;
+
+    // Tentukan header text & warna berdasarkan status
+    $status = $user->caasStage->status ?? 'Unknown';
+    $headerText = 'Congratulations';   // default
+    $headerColor = 'text-green-600';   // default warna hijau
+
+    if (strtolower($status) === 'fail') {
+        $headerText = 'Sorry';
+        $headerColor = 'text-red-600';
+    }
 @endphp
 <body class="bg-Announcement bg-cover bg-center bg-fixed bg-no-repeat min-h-screen max-w-full scroll-x-hide text-primary overflow-hidden flex items-center justify-center relative">
 
@@ -28,17 +37,17 @@
     <div class="container max-w-xl mx-auto py-5 font-crimson-text">
         <div class="flex relative justify-center">
             <img src="assets/Announcement Stone.webp" alt="" class="h-[700px] min-h-max">
-            <div class="absolute text-center mt-28 mx-[150px]">
-                <h1 class="lg:text-3xl text-3xl font-bold">Announcement</h1>
-                <hr class="mt-2 border-primary w-3/5 mx-auto mb-7 lg:mb-10">
-                <h2 class="text-md lg:text-lg text-left font-bold mb-5">
-                    Congratulations,
+            <div class="absolute text-justify mt-28 ml-[160px] mr-[150px]">
+                <h1 class="text-center lg:text-3xl text-3xl font-bold">Announcement</h1>
+                <hr class="mt-2 border-primary w-3/5 mx-auto mb-2 lg:mb-2">
+                 <!-- Header conditional (Congratulations / Sorry) -->
+                 <h2 class="text-md lg:text-lg font-bold mb-5">
+                    <span class="{{ $headerColor }}">{{ $headerText }},</span>
                     <br>
-                    {{ $name }}
+                    <span class="text-black">{{ $name }}</span>
                 </h2>
                 <p class="text-xs lg:text-sm text-justify font-im-fell-english">
                     {!! $message !!}
-                    <br>
                     <br>
                     <a href="{{ e($link) }}" class="text-blue-500 underline hover:text-blue-700">{{ $link }}</a>
                 </p>

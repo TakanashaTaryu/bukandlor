@@ -1,5 +1,17 @@
 <!-- Include Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+    /* Ensure canvas covers the entire background */
+    #webgl-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        /* Send canvas to the background */
+    }
+</style>
 <!-- Three.js Background Script -->
 <script>
     // Scene, Renderer setup
