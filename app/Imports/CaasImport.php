@@ -1,6 +1,8 @@
 <?php
 // app/Imports/CaasImport.php
 
+namespace App\Imports;
+
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\User;
@@ -61,9 +63,7 @@ class CaasImport implements ToModel, WithHeadingRow
                 ['role_id' => $role->id]
             );
         } catch (\Exception $e) {
-            // Log the error and return null to skip the row
-            
-            return null;
+            return response()->json(['error' => $e->getMessage()], 409);
         }
     }
 }
