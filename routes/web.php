@@ -28,8 +28,12 @@ Route::middleware(['auth', 'caas'])->group(function () {
     // Logout CAAS
     Route::post('logout', [CaasSessionController::class, 'destroy'])->name('caas.logout');
 
-    // Ganti password CAAS
+    // Form ganti password
     Route::view('change-password', 'CaAs.ChangePassword')->name('caas.change-password');
+    
+    // Proses ganti password
+    Route::post('change-password', [CaasSessionController::class, 'updatePassword'])
+         ->name('caas.change-password.update');
 
     // Profile CAAS
     Route::view('profile', 'CaAs.ProfileCaAs')->name('caas.profile');

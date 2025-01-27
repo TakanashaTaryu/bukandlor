@@ -11,20 +11,22 @@ class CaasMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Check user login
+        // Check if user is logged in & is a CaAs user (not admin)
         if (Auth::check() && !Auth::user()->is_admin) {
             $user = Auth::user();
             $requestedRoute = $request->route()->getName();
 
-            // Contoh: Jika user FAIL, larang akses route 'caas.shift', 'caas.gems'
-            if ($user->caasStage && in_array($requestedRoute, ['caas.shift','caas.gems'])) {
-                if ($user->caasStage->status === 'Fail') {
-                    // Kembalikan ke home jika GAGAL
-                    return redirect()->route('caas.home');
+            // If user is FAIL, block them from shift or gems (or anything else you want)
+            if ($user->caasStage && $user->caasStage->status === 'Fail') {
+                // Example: We want to block SHIFT/GEMS. 
+                // You could add more route names into this array or do other checks
+                $blockedRoutes = ['caas.choose-shift', 'caas.pick-gem', 'caas.shift', 'caas.gems'];
+                if (in_array($requestedRoute, $blockedRoutes)) {
+                    return redirect()->route('caas.home')->with('error', 'You have failed and cannot access that feature.');
                 }
             }
 
-            // Lolos -> boleh akses
+            // If everything is fine, proceed
             return $next($request);
         }
 

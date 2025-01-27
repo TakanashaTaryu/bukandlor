@@ -7,16 +7,35 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 @php
+    use Illuminate\Support\Facades\Auth;
+
     $user = Auth::user();
     $announcement = App\Models\Announcement::find(1);
-    $message = $announcement 
-        ? ($user->caasStage->status === "Fail" ? $announcement->fail_message : $announcement->success_message)
-        : "Unknown";
-    $link = ($announcement && $user->caasStage->status !== "Fail") ? $announcement->link : "";
+
+    // Pesan default
+    $message = "Unknown";
+    $link = "";
+
+    // Jika ada record Announcement
+    if ($announcement) {
+        // Cek status user: jika "Fail" tampilkan fail_message, kalau selain itu tampilkan success_message
+        $message = ($user->caasStage->status === "Fail")
+            ? $announcement->fail_message
+            : $announcement->success_message;
+        
+        // Link hanya aktif bila user tidak gagal
+        if ($user->caasStage->status !== "Fail") {
+            $link = $announcement->link ?? '';
+        }
+    }
+
+    // Nama user (jika tidak ada profile->name, fallback ke nim)
     $name = $user->profile->name ?? $user->nim;
 
     // Tentukan header text & warna berdasarkan status
     $status = $user->caasStage->status ?? 'Unknown';
+    $stageName = $user->caasStage->stage->name ?? 'Unknown';
+
     $headerText = 'Congratulations';   // default
     $headerColor = 'text-green-600';   // default warna hijau
 
@@ -52,16 +71,39 @@
                     <a href="{{ e($link) }}" class="text-blue-500 underline hover:text-blue-700">{{ $link }}</a>
                 </p>
             </div>
+            
+            <!-- 
+                Bagian untuk SHIFT/GEMS button:
+                - Tampil hanya jika user tidak "Fail"
+                - Stage = 'Coding & Writing Test', 'Interview', atau 'Teaching Test' => SHIFT
+                - Stage = 'Upgrading' => GEMS
+                - Selain itu => tidak ada tombol
+            -->
+            
             <div class="absolute bottom-28 mr-16">
-
-                <!-- TODO BUAT SHIFT/GEM -->
-                
-                <button class="relative text-primary transition-all duration-300 ease-in-out transform hover:scale-105 hover:brightness-150 active:scale-95 list-none">
-                    <img src="assets/Button Pink.webp" alt="No" class="w-[150px]">
-                    <p class="absolute inset-0 flex items-center justify-center text-lg font-bold">Shift</p>
-                </button>
-
+                @if (strtolower($status) !== 'fail')
+                    @if (in_array($stageName, ['Coding & Writing Test','Interview','Teaching Test']))
+                        <!-- SHIFT BUTTON -->
+                        <a href="{{ route('caas.choose-shift') }}"
+                           class="relative text-primary transition-all duration-300 ease-in-out transform hover:scale-105 hover:brightness-150 active:scale-95 list-none">
+                            <img src="assets/Button Pink.webp" alt="ShiftButton" class="w-[150px]">
+                            <p class="absolute inset-0 flex items-center justify-center text-lg font-bold">
+                                Shift
+                            </p>
+                        </a>
+                    @elseif ($stageName === 'Upgrading')
+                        <!-- GEMS BUTTON -->
+                        <a href="{{ route('caas.choose-gem') }}"
+                           class="relative text-primary transition-all duration-300 ease-in-out transform hover:scale-105 hover:brightness-150 active:scale-95 list-none">
+                            <img src="assets/Button Pink.webp" alt="GemButton" class="w-[150px]">
+                            <p class="absolute inset-0 flex items-center justify-center text-lg font-bold">
+                                Gems
+                            </p>
+                        </a>
+                    @endif
+                @endif
             </div>
+            
             <div class="absolute bottom-[70px] ml-56">
                 <img src="assets/Sign DLOR.webp" alt="" class="w-[120px]">
             </div>

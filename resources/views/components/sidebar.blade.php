@@ -22,37 +22,44 @@
             </li>
         </ul>
             @php
+                use Illuminate\Support\Facades\Auth;
                 $config = App\Models\Configuration::find(1);
+                $user = Auth::user();
             @endphp
 
-            @if ($config && ($config->pengumuman_on || $config->isi_jadwal_on || $config->role_on))
-                <h1 class="text-white text-center text-2xl mt-4 mb-2 font-semibold">Recruitment</h1>
-            @endif
-        <ul class="space-y-1 font-medium">
-            @if ($config && $config->pengumuman_on)
-            <li class="h-16 max-w-[232px] mx-auto">
-                <a href="/announcement" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
-                    <x-sidebar-button>Announcement</x-sidebar-button>
-                </a>
-            </li>
-            @endif
+            <!-- Recruitment Section -->
+@if ($config && ($config->pengumuman_on || $config->isi_jadwal_on || $config->role_on))
+<h1 class="text-white text-center text-2xl mt-4 mb-2 font-semibold">Recruitment</h1>
+@endif
 
-            @if ($config && $config->isi_jadwal_on)
-                <li class="h-16 max-w-[232px] mx-auto">
-                    <a href="/choose-shift" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
-                        <x-sidebar-button>Shift</x-sidebar-button>
-                    </a>
-                </li>
-            @endif
+<ul class="space-y-1 font-medium">
+{{-- Announcement Link --}}
+@if ($config && $config->pengumuman_on)
+    <li class="h-16 max-w-[232px] mx-auto">
+        <a href="/announcement" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
+            <x-sidebar-button>Announcement</x-sidebar-button>
+        </a>
+    </li>
+@endif
 
-            @if ($config && $config->role_on)
-                <li class="h-16 max-w-[232px] mx-auto">
-                    <a href="/choose-gem" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
-                        <x-sidebar-button>Gems</x-sidebar-button>
-                    </a>
-                </li>
-            @endif
-        </ul>
+{{-- Choose Shift Link (hide if user FAIL) --}}
+@if ($config && $config->isi_jadwal_on && $user->caasStage && $user->caasStage->status !== 'Fail')
+    <li class="h-16 max-w-[232px] mx-auto">
+        <a href="/choose-shift" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
+            <x-sidebar-button>Shift</x-sidebar-button>
+        </a>
+    </li>
+@endif
+
+{{-- Choose Gems Link (hide if user FAIL) --}}
+@if ($config && $config->role_on && $user->caasStage && $user->caasStage->status !== 'Fail')
+    <li class="h-16 max-w-[232px] mx-auto">
+        <a href="/choose-gem" class="flex items-center justify-center p-2 text-gray-200 rounded-lg h-full">
+            <x-sidebar-button>Gems</x-sidebar-button>
+        </a>
+    </li>
+@endif
+</ul>
         <h1 class="text-white text-center text-2xl mt-4 mb-2 font-semibold">Contacts</h1>
         <ul class="space-y-1 font-medium">
             <li class="h-16 max-w-[232px] mx-auto">

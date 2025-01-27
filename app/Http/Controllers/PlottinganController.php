@@ -32,6 +32,12 @@ class PlottinganController extends Controller
             return redirect('/login')->with('error', 'Something is wrong with your CAAS data');
         }
 
+        // If user is fail, just redirect them
+        if ($user->caasStage && $user->caasStage->status === 'Fail') {
+            return redirect()->route('caas.home')
+                ->with('error', 'You cannot choose a shift because you have failed.');
+        }
+
         // Cek apakah user sudah memiliki SHIFT (jika kebijakan 1 SHIFT total)
         //   -> Jika boleh multiple SHIFT non-overlap, bisa dihapus logic ini
         $alreadyHasShift = Plottingan::where('caas_id', $caas->id)->exists();
@@ -136,7 +142,7 @@ class PlottinganController extends Controller
             ->first();
 
         if (!$plot || !$plot->shift) {
-            return redirect()->route('caas.choose-shift')->with('error','Pick a shift first!');
+            return redirect()->route('caas.choose-shift')->with('error', 'Pick a shift first!');
         }
 
         // Tampilkan SHIFT di Blade "CaAs.FixShift"
