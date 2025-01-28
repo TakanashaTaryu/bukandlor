@@ -11,6 +11,15 @@ jobs:
     services:
       mysql:
         image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --password=root_password" --health-interval=10s --health-timeout=5s --health-retries=3
+
 
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
@@ -35,6 +44,25 @@ jobs:
       - name: Set Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install npm Dependencies
+        run: |
+          npm install -g npm@latest
+          npm cache clean --force
+
+      - name: Build Frontend Assets
+        run: npm run build
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: public/
+
       - name: Deploy to Server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -43,4 +71,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /
           exclude: |
-            vendor
+            **/vendor/**
