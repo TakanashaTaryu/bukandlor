@@ -71,3 +71,4 @@ jobs:
           server-dir: /
           exclude: |
             **/vendor/**
+            **/node_modules/**
