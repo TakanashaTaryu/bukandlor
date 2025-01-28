@@ -1,6 +1,8 @@
 /.phpunit.cache
 /node_modules
+/public/build
 /public/hot
+/public/storage
 /storage/*.key
 /vendor
 .env
@@ -15,4 +17,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-daskomrec25.zip
