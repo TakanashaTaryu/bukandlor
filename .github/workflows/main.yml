@@ -68,6 +68,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+<<<<<<< HEAD
           server-dir: /../bukandlor
           exclude: |
             **/.git*
@@ -134,3 +135,10 @@ jobs:
 
 
 
+=======
+          server-dir: /
+          exclude: |
+            **/vendor/**
+            **/node_modules/**
+            
+>>>>>>> 4e4a62cd37b950a61de1c581c0f78dd9302cc45d
