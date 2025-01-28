@@ -127,8 +127,3 @@ jobs:
             vite.config.js
 
 
-      - name: Connect Frontend To Backend
-        run: |
-          ls -s $HOME/bukandlor/public/acets $HOME/bukandlor.tatsuyaryu.my.id/assets
-          ls -s $HOME/bukandlor/storage/app/public $HOME/bukandlor.tatsuyaryu.my.id/storage
-
